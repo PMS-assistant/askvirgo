@@ -1,6 +1,12 @@
 import Hero from '../components/home/Hero';
+import PromiseCards from '../components/home/PromiseCards';
+import MeetVirgo from '../components/home/MeetVirgo';
 import BeforeAfter from '../components/home/BeforeAfter';
-import CapabilityScroller from '../components/home/CapabilityScroller';
+import CapabilityBento from '../components/home/CapabilityBento';
+import Integrations from '../components/home/Integrations';
+import WhoItsFor from '../components/home/WhoItsFor';
+import ReadOnlyBand from '../components/home/ReadOnlyBand';
+import Faq from '../components/home/Faq';
 import VirgoProblem from '../components/virgo/VirgoProblem';
 import VirgoHowItWorks from '../components/virgo/VirgoHowItWorks';
 import VirgoPilotCTA from '../components/virgo/VirgoPilotCTA';
@@ -16,24 +22,31 @@ export default function HomePage() {
 
       <Hero />
 
-      {/* Say what's wrong before selling the fix — everything below is the
-          answer to this section. */}
+      {/* Three promises straight away; the third (read-only) is the one that
+          sets Virgo apart. */}
+      <PromiseCards />
+
+      {/* The product itself, before any explanation. */}
+      <MeetVirgo />
+
+      {/* Say what's wrong before selling the fix. */}
       <VirgoProblem />
 
-      {/* The transformation, shown before it's explained — a working day
-          collapsing from five apps to one question. */}
+      {/* The transformation: a working day collapsing from five apps to one question. */}
       <BeforeAfter />
 
-      {/* What you can ask, capability by capability — housekeeping, guest
-          messaging and the rest live here as example questions, not separate
-          dashboards. The single surviving product visual besides the hero's
-          own ask-demo, so it also carries the #virgo nav anchor. */}
-      <div id="virgo">
-        <CapabilityScroller />
-      </div>
+      {/* What you can do (carries the #virgo nav anchor), then what it connects to. */}
+      <CapabilityBento />
+      <Integrations />
 
-      {/* How to start, then the ask. Who built it lives on /company. */}
+      <WhoItsFor />
+
+      {/* The page's one dark band. */}
+      <ReadOnlyBand />
+
       <VirgoHowItWorks />
+      <Faq />
+
       <div id="pilot">
         <VirgoPilotCTA />
       </div>

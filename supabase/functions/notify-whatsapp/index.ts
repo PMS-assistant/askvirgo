@@ -1,10 +1,10 @@
 /*
-  Sends a WhatsApp message to the A.R.M number whenever someone submits the
+  Sends a WhatsApp message to the Virgo enquiry number whenever someone submits the
   pilot/enquiry form, so an enquiry lands on a phone instead of sitting in a
   table nobody checks.
 
   Why this runs server-side and not in the browser: the Meta access token can
-  send messages as A.R.M. Anything in the React bundle is readable by every
+  send messages as Virgo. Anything in the React bundle is readable by every
   visitor (View Source is enough), so a token shipped to the client is a token
   anyone can use to message people as you. It has to live somewhere the public
   can't read, which is what this function is for.
@@ -20,7 +20,7 @@
 
 const WHATSAPP_TOKEN = Deno.env.get('WHATSAPP_TOKEN');
 const PHONE_NUMBER_ID = Deno.env.get('PHONE_NUMBER_ID');
-/** Where the alert goes — the A.R.M number, not the visitor's. */
+/** Where the alert goes — the Virgo enquiry number, not the visitor's. */
 const NOTIFY_NUMBER = Deno.env.get('WHATSAPP_NOTIFY_NUMBER');
 /** Shared secret, sent by the webhook as x-webhook-secret. */
 const WEBHOOK_SECRET = Deno.env.get('ENQUIRY_WEBHOOK_SECRET');
@@ -45,7 +45,7 @@ function flatten(value: string) {
 
 function buildSummary(row: Signup) {
   const parts = [
-    `New enquiry from ${row.name?.trim() || 'someone'}`,
+    `New Virgo enquiry from ${row.name?.trim() || 'someone'}`,
     row.hotel_name?.trim() ? `Hotel: ${row.hotel_name.trim()}` : null,
     row.email?.trim() ? `Email: ${row.email.trim()}` : null,
     row.message?.trim() ? `Message: ${row.message.trim()}` : null,
@@ -58,7 +58,7 @@ Deno.serve(async (req) => {
     return new Response('Method not allowed', { status: 405 });
   }
 
-  // Without this the function's URL is a public "send a WhatsApp as A.R.M"
+  // Without this the function's URL is a public "send a WhatsApp as Virgo"
   // button. The webhook is configured to send the matching header.
   if (!WEBHOOK_SECRET || req.headers.get('x-webhook-secret') !== WEBHOOK_SECRET) {
     return new Response('Unauthorized', { status: 401 });

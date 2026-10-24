@@ -1,30 +1,30 @@
 import { Link } from 'react-router-dom';
-import { Github, Linkedin, Mail, MapPin } from 'lucide-react';
+import { Mail } from 'lucide-react';
 
 const COLUMNS = [
   {
-    heading: 'Virgo',
+    heading: 'Product',
     links: [
       { name: 'Home', path: '/' },
       { name: 'Virgo', path: '/#virgo' },
+      { name: 'Integrations', path: '/#integrations' },
+      { name: 'Read-only', path: '/#security' },
       { name: 'How it works', path: '/#how-it-works' },
+      { name: 'FAQ', path: '/#faq' },
       { name: 'Get in touch', path: '/#pilot' },
     ],
   },
   {
-    heading: 'Company',
+    heading: 'Legal',
     links: [
-      { name: 'About A.R.M', path: '/company' },
-      { name: 'The Gig Search', path: '/thegigsearch' },
-      { name: 'Consulting', path: '/consulting' },
+      { name: 'Privacy', path: '/privacy' },
+      { name: 'Terms', path: '/terms' },
     ],
   },
 ];
 
 const SOCIALS = [
-  { icon: Github, href: '#', label: 'GitHub' },
-  { icon: Linkedin, href: '#', label: 'LinkedIn' },
-  { icon: Mail, href: 'mailto:info@armtechnologies.ltd', label: 'Email' },
+  { icon: Mail, href: 'mailto:hello@askvirgo.co.uk', label: 'Email' },
 ];
 
 /* A frosted glass card rather than a flat band — reuses the same
@@ -80,7 +80,7 @@ export default function Footer() {
               this is a fifth of the height for the same links. */}
           <div className="sm:hidden text-center">
             <h4 className="font-display" style={{ fontWeight: 800, fontSize: '19px', color: 'var(--ink)', marginBottom: '14px' }}>
-              A.R.M<span style={{ color: 'var(--primary)' }}>.</span>
+              Virgo<span style={{ color: 'var(--primary)' }}>.</span>
             </h4>
             <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '8px 14px', marginBottom: '18px' }}>
               {[...COLUMNS[0].links, ...COLUMNS[1].links].map(link => (
@@ -102,23 +102,22 @@ export default function Footer() {
               ))}
             </div>
             <a
-              href="mailto:info@armtechnologies.ltd"
+              href="mailto:hello@askvirgo.co.uk"
               className="font-body"
               style={{ fontSize: '13px', color: 'var(--muted)', textDecoration: 'none' }}
             >
-              info@armtechnologies.ltd
+              hello@askvirgo.co.uk
             </a>
           </div>
 
           <div className="hidden sm:grid sm:grid-cols-4 gap-10 md:gap-12 mb-8 text-left">
             <div>
               <h4 className="font-display" style={{ fontWeight: 800, fontSize: '20px', color: 'var(--ink)', marginBottom: '14px' }}>
-                A.R.M<span style={{ color: 'var(--primary)' }}>.</span>
+                Virgo<span style={{ color: 'var(--primary)' }}>.</span>
               </h4>
-              <p className="font-body" style={{ fontSize: '13px', color: 'var(--muted)', lineHeight: 1.6, maxWidth: '220px', margin: '0 0 5px' }}>
+              <p className="font-body" style={{ fontSize: '13px', color: 'var(--muted)', lineHeight: 1.6, maxWidth: '220px', margin: 0 }}>
                 Read-only AI intelligence for hotels — one question, every system.
               </p>
-              <p className="font-body" style={{ fontSize: '13px', color: 'var(--faint)' }}>Est. 2023</p>
             </div>
 
             {COLUMNS.map(col => (
@@ -158,18 +157,12 @@ export default function Footer() {
                 <li className="flex items-center justify-center md:justify-start gap-2">
                   <Mail size={14} style={{ color: 'var(--primary)', flexShrink: 0 }} />
                   <a
-                    href="mailto:info@armtechnologies.ltd"
+                    href="mailto:hello@askvirgo.co.uk"
                     className="font-body"
                     style={{ fontSize: '14px', color: 'var(--ink-soft)', textDecoration: 'none' }}
                   >
-                    info@armtechnologies.ltd
+                    hello@askvirgo.co.uk
                   </a>
-                </li>
-                <li className="flex items-center justify-center md:justify-start gap-2">
-                  <MapPin size={14} style={{ color: 'var(--primary)', flexShrink: 0 }} />
-                  <span className="font-body" style={{ fontSize: '14px', color: 'var(--ink-soft)' }}>
-                    Bournemouth, United Kingdom
-                  </span>
                 </li>
               </ul>
 
@@ -192,7 +185,10 @@ export default function Footer() {
 
           <div style={{ paddingTop: '22px', borderTop: '1px solid var(--line-soft)', textAlign: 'center' }}>
             <p className="font-body" style={{ fontSize: '13px', color: 'var(--faint)' }}>
-              &copy; 2026 A.R.M Technologies Limited. All rights reserved.
+              &copy; 2026 Virgo. All rights reserved.
+            </p>
+            <p className="font-body" style={{ fontSize: '12px', color: 'var(--faint)', lineHeight: 1.6, marginTop: '6px' }}>
+              Virgo is a product of ARM Technologies Limited. Registered in England and Wales, company number 15163077. Registered office: Wilson House, 2 Lorne Park Road, Bournemouth, BH1 1JN.
             </p>
           </div>
         </div>

@@ -1,4 +1,4 @@
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Lock } from 'lucide-react';
 import { useReveal } from '../../lib/motion';
 import HeroAskDemo from './HeroAskDemo';
 
@@ -66,9 +66,7 @@ export default function Hero() {
 
       <div className="relative max-w-[1240px] mx-auto px-6 grid lg:grid-cols-2 gap-x-16 gap-y-14 items-center">
         <div className="flex flex-col">
-          {/* Parent-brand lockup: the product is named first, the company
-              endorses it. Virgo has no customers yet, so A.R.M's name carries
-              the credibility — the track record itself lives on /company. */}
+          {/* Product-only eyebrow: the site is Virgo's own, no parent brand. */}
           <p
             ref={eyebrowRef}
             className="font-mono"
@@ -79,7 +77,7 @@ export default function Hero() {
             }}
           >
             <span style={{ color: 'var(--primary)', fontWeight: 700 }}>Virgo</span>
-            <span style={{ color: 'var(--faint)' }}> · by A.R.M Technologies</span>
+            <span style={{ color: 'var(--faint)' }}> · AI hotel intelligence</span>
           </p>
 
           <h1
@@ -134,6 +132,15 @@ export default function Hero() {
             Virgo connects your <Tag>PMS</Tag> <Tag>Accounting</Tag> <Tag>Guest Messages</Tag>{' '}
             <Tag>Inspections</Tag> and <Tag>Maintenance</Tag>, then answers anything instantly
             and flags what needs a person.
+          </p>
+
+          {/* The promise nobody else in this space can make, said once, near the top. */}
+          <p
+            className="font-body order-5 mt-6 md:mt-8"
+            style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', color: 'var(--ink-soft)', margin: 0 }}
+          >
+            <Lock size={15} style={{ color: 'var(--primary)', flexShrink: 0 }} />
+            Read-only. Virgo never changes your systems.
           </p>
         </div>
 

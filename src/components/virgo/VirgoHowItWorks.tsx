@@ -22,7 +22,7 @@ const steps = [
     num: '01',
     icon: Link2,
     title: 'Connect your tools',
-    desc: 'Point Virgo at the systems you already run — PMS, accounting, guest messaging. Read-only, via official APIs. Around 20 minutes, no IT team, no migration.',
+    desc: 'Point Virgo at the systems you already run — PMS, accounting, guest messaging. Read-only, via official APIs. No IT team, no migration.',
   },
   {
     num: '02',

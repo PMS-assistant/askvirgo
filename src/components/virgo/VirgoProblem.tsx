@@ -214,8 +214,8 @@ export default function VirgoProblem() {
             className="font-body"
             style={{ opacity: 0, fontSize: 'clamp(15px, 1.7vw, 18px)', color: 'var(--muted)', maxWidth: '540px', margin: '0 auto', lineHeight: 1.7 }}
           >
-            Every morning, hotel managers routinely lose an hour or more just collecting
-            data across disconnected systems, before any real work begins.
+            Every morning, hotel managers lose time collecting data across
+            disconnected systems, before any real work begins.
           </p>
         </div>
 
@@ -278,7 +278,7 @@ export default function VirgoProblem() {
             className="font-display"
             style={{ fontWeight: 800, fontSize: 'clamp(20px, 3vw, 30px)', color: 'var(--ink)', marginBottom: '14px', lineHeight: 1.25 }}
           >
-            That's well over an hour every morning
+            That's a lot of every morning
             {/* The forced break gives a deliberate two-line rhythm on wider
                 screens. On a phone the first line alone measures ~361px inside
                 a ~294px card, so holding the break would wrap it raggedly —
@@ -293,8 +293,8 @@ export default function VirgoProblem() {
             "<span ref={quoteRef}>How is my hotel doing right now?</span>"
           </div>
           <div className="font-body" style={{ fontSize: '15px', color: 'var(--ink-soft)' }}>
-            Virgo answers that, and every question like it, in{' '}
-            <span style={{ color: 'var(--primary)', fontWeight: 700 }}>seconds</span>.
+            Virgo answers that, and every question like it, from{' '}
+            <span style={{ color: 'var(--primary)', fontWeight: 700 }}>one place</span>.
           </div>
         </div>
       </div>

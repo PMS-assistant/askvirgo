@@ -22,7 +22,7 @@ export default function AnnouncementBanner() {
       >
         <span style={{ fontWeight: 700 }}>Now launching — Virgo</span>
         <span style={{ opacity: 0.75 }}>
-          A.R.M's AI hotel intelligence platform is onboarding its first UK hotels.
+          The AI hotel intelligence platform is onboarding its first UK hotels.
         </span>
         <span style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontWeight: 600, textDecoration: 'underline' }}>
           Get in touch <ArrowRight size={13} />

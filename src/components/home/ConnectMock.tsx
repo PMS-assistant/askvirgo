@@ -5,8 +5,7 @@ import { useReveal } from '../../lib/motion';
    connecting Virgo — the whole of step 01, in one picture.
 
    Accuracy matters here: Cloudbeds is OAuth 2.0 and Virgo requests read scopes
-   only (VZIR_BRD.md §5.2; Cloudbeds and Xero are both live-verified per
-   PROGRESS.md). Showing the scope list is the strongest possible statement of
+   only. Showing the scope list is the strongest possible statement of
    the read-only rule — it's evidence rather than a claim. Nothing here is
    clickable; same convention as the other product mocks on this site. */
 
