@@ -105,6 +105,11 @@
     font-family: 'JetBrains Mono', monospace;
   }
 
+  /* Light serif for Virgo's answers (homepage hero). */
+  .font-answer {
+    font-family: 'Newsreader', Georgia, 'Times New Roman', serif;
+  }
+
   :focus-visible {
     outline: 2px solid var(--primary);
     outline-offset: 3px;
@@ -237,6 +242,162 @@
   @keyframes shine-sweep {
     0% { background-position: 220% 0; }
     100% { background-position: -220% 0; }
+  }
+
+  /* ---------- Homepage hero: "the answer is the headline" ----------
+     A manager's question and Virgo's answer, every figure footnoted to its
+     source. Slides stack in one grid cell so the hero never changes height
+     as they rotate. */
+  .hero-answer {
+    position: relative;
+    background: var(--wash);
+    padding: clamp(40px, 7vw, 88px) 0 clamp(28px, 4vw, 44px);
+  }
+  .hero-roles {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin-bottom: clamp(24px, 3.5vw, 40px);
+  }
+  .hero-role {
+    position: relative;
+    background: none;
+    border: 0;
+    border-bottom: 1px solid var(--line);
+    padding: 0 0 12px;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--faint);
+    cursor: pointer;
+    transition: color 0.2s ease;
+  }
+  .hero-role:hover,
+  .hero-role.is-on { color: var(--ink); }
+  .hero-role-bar {
+    position: absolute;
+    left: 0;
+    bottom: -1px;
+    height: 2px;
+    width: 0;
+    background: var(--primary);
+  }
+  .hero-role.is-on .hero-role-bar { animation: hero-progress linear forwards; }
+  @keyframes hero-progress { from { width: 0; } to { width: 100%; } }
+
+  .hero-slides { display: grid; }
+  .hero-slide {
+    grid-area: 1 / 1;
+    display: grid;
+    gap: clamp(22px, 3vw, 32px);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(8px);
+    transition: opacity 0.45s ease, transform 0.45s ease, visibility 0s linear 0.45s;
+  }
+  .hero-slide.is-on {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition: opacity 0.45s ease, transform 0.45s ease, visibility 0s;
+  }
+  .hero-asked {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 6px 14px;
+    margin: 0;
+  }
+  .hero-asked-time { font-size: 12px; color: var(--faint); letter-spacing: 0.04em; }
+  .hero-asked q {
+    font-style: italic;
+    font-weight: 300;
+    font-size: clamp(19px, 2.2vw, 25px);
+    color: var(--ink-soft);
+  }
+  .hero-answer-text {
+    font-weight: 300;
+    font-size: clamp(30px, 3.6vw, 46px);
+    line-height: 1.14;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    max-width: 30ch;
+    margin: 14px 0 0;
+    text-wrap: balance;
+  }
+  .hero-fig {
+    text-decoration: underline;
+    text-decoration-color: var(--primary);
+    text-decoration-thickness: 0.06em;
+    text-underline-offset: 0.14em;
+    white-space: nowrap;
+  }
+  .hero-fig sup {
+    /* Tailwind's preflight pins sup to baseline + top:-0.5em of its own (tiny)
+       size, which barely lifts it at 0.32em; lift it by the answer's size. */
+    top: -1.6em;
+    font-size: 0.32em;
+    font-weight: 600;
+    color: var(--primary);
+    margin-left: 0.08em;
+  }
+  .hero-eyebrow {
+    font-size: 11.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin: 0 0 12px;
+  }
+  .hero-notes {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0 28px;
+    border-top: 1px solid var(--ink);
+  }
+  .hero-note {
+    display: grid;
+    grid-template-columns: 22px 1fr;
+    gap: 10px;
+    padding: 13px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .hero-note-n { font-size: 12px; font-weight: 600; color: var(--primary); padding-top: 2px; }
+  .hero-note b { display: block; font-weight: 600; font-size: 14px; color: var(--ink); }
+  .hero-note span span { display: block; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .hero-sample {
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--faint);
+    margin: 10px 0 0;
+  }
+  .hero-foot {
+    margin-top: clamp(28px, 4vw, 44px);
+    border-top: 1px solid var(--line);
+    padding-top: 22px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 18px 32px;
+    align-items: center;
+  }
+  .hero-foot-text {
+    margin: 0;
+    font-size: clamp(16px, 1.5vw, 18px);
+    line-height: 1.55;
+    max-width: 50ch;
+    color: var(--muted);
+  }
+  .hero-foot-text strong { color: var(--ink); font-weight: 600; }
+  .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; }
+  .hero-readonly { display: inline-flex; align-items: center; gap: 7px; font-size: 13.5px; color: var(--ink-soft); }
+
+  @media (max-width: 900px) {
+    .hero-roles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .hero-notes { grid-template-columns: 1fr; }
+    .hero-foot { grid-template-columns: 1fr; }
   }
 
   /* Diagonal hatch used on bento card corners, lifted from the Semrush grid. */
