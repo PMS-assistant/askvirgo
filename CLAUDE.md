@@ -35,7 +35,7 @@ which data sources are real today and which are roadmap.
 | `/terms` | `src/pages/TermsPage.tsx`, **draft** placeholder text |
 | `*` | `src/pages/NotFoundPage.tsx` |
 
-Homepage order and anchors: see "Homepage structure (reworked)" below.
+Homepage order and anchors: see "Homepage structure" below.
 
 ## Structure
 
@@ -122,30 +122,30 @@ shows PMS names that Virgo does not list yet (apaleo, SIHOT). (4) Only claim a s
 as connected once it is, or label it "In progress" / "Roadmap". Status today per the
 content plan: Cloudbeds, Xero and WhatsApp live, Reviews in progress.
 
-## Homepage structure (reworked)
-
-The homepage was reworked using otelai.com's layout and flow only (never its wording,
-branding or style). Key difference: otelai takes approved actions in hotel systems;
-Virgo is strictly read-only, so the page leads with that. Not borrowed: results stats,
-case studies and quotes, certification badges, press, team, newsletter, and any
-"automation" or "let it do the work" wording. Where proof is missing, use honest
-substitutes: the read-only guarantee, sample-data demos, a pilot invitation.
+## Homepage structure
 
 Order in `src/pages/HomePage.tsx`:
-1. `Hero` (with a read-only cue)
-2. `PromiseCards`: ask in plain English / sources shown / read-only
-3. `MeetVirgo`: the tilting product panel (`VirgoTiltPanel`)
-4. `VirgoProblem`, then `BeforeAfter`
-5. `CapabilityBento` (`#virgo`): data in `home/capabilities.ts`, with honest statuses
-6. `Integrations` (`#integrations`)
-7. `WhoItsFor` (`#who`)
-8. `ReadOnlyBand` (`#security`): the one dark band, uses `--on-ink-*` tokens
-9. `VirgoHowItWorks` (`#how-it-works`)
-10. `Faq` (`#faq`): only answers that are true today
-11. `VirgoPilotCTA` (`#pilot`): contact form, logic unchanged
+1. `Hero`
+2. `VirgoProblem`, then `BeforeAfter`
+3. `CapabilityScroller` (`#virgo`): "Meet Virgo" tilt panel plus the pinned capability tour
+4. `Integrations` (`#integrations`): eight system categories
+5. `VirgoHowItWorks` (`#how-it-works`)
+6. `VirgoPilotCTA` (`#pilot`): contact form, logic unchanged
+
+**Rejected redesign (do not redo as-is).** A layout inspired by otelai.com was built and
+then reverted at the owner's request. It added promise cards, a capability bento grid,
+a "who it's for" section, a dark read-only band and an FAQ, and removed the pinned
+tour. The owner disliked the overall look and colours, the new sections, found it too
+plain next to otelai, and missed parts of the earlier design. It is still in git
+history (commit `2aada9c`) if any piece is wanted back. Any new redesign must start by
+asking what look the owner does want, ideally with a reference.
+
+Constraints for any redesign: take layout ideas only, never otelai's wording or
+branding; Virgo is strictly read-only whereas otelai takes approved actions, so never
+borrow "automation" or rate-action sections; no stats, case studies, certifications or
+quotes until real ones exist.
 
 Still open: pricing (none shown), real security facts (no badges), a real booking link
 for "Book a demo" (scrolls to the form), favicon and a real `og:image`, and whether
 Integrations needs live / in-progress / roadmap labels on every system (only Reviews
-is labelled today). Legal and 404 pages already use the shared tokens and were not
-redesigned further.
+is labelled today).

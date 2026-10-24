@@ -1,14 +1,12 @@
 import { BedDouble, Calculator, MessageCircle, Star, Users, Network, UtensilsCrossed, CreditCard } from 'lucide-react';
 import { useStaggerReveal } from '../../lib/motion';
-import { StatusPill } from './CapabilityBento';
-import type { CapabilityStatus } from './capabilities';
 
 /* The eight kinds of system Virgo connects to, each with the names a hotel
    would recognise and the one thing it lets you ask. Copy is the owner's own
    wording; keep it read-only in tone ("see", "know", "spot") — nothing here
    may imply Virgo changes anything in these systems. */
 
-const CATEGORIES: { icon: typeof BedDouble; title: string; status?: CapabilityStatus; systems: string[]; line: string }[] = [
+const CATEGORIES: { icon: typeof BedDouble; title: string; status?: string; systems: string[]; line: string }[] = [
   {
     icon: BedDouble,
     title: 'Booking systems',
@@ -114,7 +112,16 @@ export default function Integrations() {
               </h3>
               {status && (
                 <span style={{ alignSelf: 'flex-start' }}>
-                  <StatusPill status={status} />
+                  <span
+                    className="font-mono"
+                    style={{
+                      fontSize: '10.5px', fontWeight: 600, letterSpacing: '0.6px', textTransform: 'uppercase',
+                      color: 'var(--ink-soft)', background: 'var(--graphite-wash)',
+                      border: '1px solid var(--line)', borderRadius: '999px', padding: '2px 9px',
+                    }}
+                  >
+                    {status}
+                  </span>
                 </span>
               )}
               <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexWrap: 'wrap', gap: '6px' }}>

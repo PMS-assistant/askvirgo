@@ -45,9 +45,6 @@
 
   --line: rgba(20, 18, 26, 0.10);
   --line-soft: rgba(20, 18, 26, 0.06);
-  /* Hairlines and strike-through on the dark (--ink) band. */
-  --on-ink-line: rgba(255, 255, 255, 0.16);
-  --on-ink-strike: rgba(255, 255, 255, 0.4);
 
   --radius-card: 24px;
   --radius-pill: 999px;
@@ -116,9 +113,6 @@
   /* Keep anchored sections clear of the sticky navbar. */
   #virgo,
   #integrations,
-  #who,
-  #security,
-  #faq,
   #data-sources,
   #how-it-works,
   #pilot {
@@ -279,26 +273,4 @@ textarea {
 select option {
   background-color: var(--surface);
   color: var(--ink);
-}
-
-@layer components {
-  /* Cards on the homepage lift slightly on hover. */
-  .lift-card {
-    transition: transform 220ms ease, box-shadow 220ms ease;
-  }
-  .lift-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 18px 40px rgba(20, 18, 26, 0.08);
-  }
-
-  /* FAQ: hide the native marker, rotate our chevron when open. */
-  .faq-item summary::-webkit-details-marker {
-    display: none;
-  }
-  .faq-item .faq-chevron {
-    transition: transform 200ms ease;
-  }
-  .faq-item[open] .faq-chevron {
-    transform: rotate(180deg);
-  }
 }

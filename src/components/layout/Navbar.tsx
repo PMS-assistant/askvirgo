@@ -7,10 +7,7 @@ import { useMountAnimation, prefersReducedMotion } from '../../lib/motion';
 const navLinks = [
   { name: 'Virgo', path: '/#virgo' },
   { name: 'Integrations', path: '/#integrations' },
-  { name: "Who it's for", path: '/#who' },
-  { name: 'Read-only', path: '/#security' },
   { name: 'How it works', path: '/#how-it-works' },
-  { name: 'FAQ', path: '/#faq' },
 ];
 
 function Wordmark({ onClick }: { onClick?: () => void }) {

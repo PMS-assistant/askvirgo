@@ -3,14 +3,12 @@ import { Mail } from 'lucide-react';
 
 const COLUMNS = [
   {
-    heading: 'Product',
+    heading: 'Virgo',
     links: [
       { name: 'Home', path: '/' },
       { name: 'Virgo', path: '/#virgo' },
       { name: 'Integrations', path: '/#integrations' },
-      { name: 'Read-only', path: '/#security' },
       { name: 'How it works', path: '/#how-it-works' },
-      { name: 'FAQ', path: '/#faq' },
       { name: 'Get in touch', path: '/#pilot' },
     ],
   },

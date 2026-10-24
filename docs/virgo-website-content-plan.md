@@ -31,16 +31,12 @@ Re-check against the product's own docs before changing any row.
 
 | Section | Component | Job |
 |---|---|---|
-| Hero | `home/Hero.tsx`, `HeroAskDemo.tsx` | One question, every system. Read-only cue. Single CTA: Book a demo |
-| Promises | `home/PromiseCards.tsx` | Plain English, sources shown, read-only |
-| Meet Virgo | `home/MeetVirgo.tsx` | The product itself |
-| Problem, Before/After | `virgo/VirgoProblem.tsx`, `home/BeforeAfter.tsx` | Say what is wrong before selling the fix |
-| Capabilities (`#virgo`) | `home/CapabilityBento.tsx` | What you can do, with honest statuses |
-| Integrations (`#integrations`) | `home/Integrations.tsx` | Eight system categories |
-| Who it's for (`#who`) | `home/WhoItsFor.tsx` | Four roles with example questions |
-| Read-only (`#security`) | `home/ReadOnlyBand.tsx` | What it does and never does |
+| Hero | `home/Hero.tsx`, `HeroAskDemo.tsx` | One question, every system. Single CTA: Book a demo (scrolls to `#pilot`) |
+| Problem | `virgo/VirgoProblem.tsx` | Say what is wrong before selling the fix |
+| Before / after | `home/BeforeAfter.tsx` | A working day collapsing from several apps to one question |
+| Capabilities (`#virgo`) | `home/CapabilityScroller.tsx` | Meet Virgo, then what you can ask, capability by capability, with honest statuses |
+| Integrations (`#integrations`) | `home/Integrations.tsx` | Eight system categories and the names in each |
 | How it works (`#how-it-works`) | `virgo/VirgoHowItWorks.tsx` | Connect, ask, get alerts |
-| FAQ (`#faq`) | `home/Faq.tsx` | True-today answers only |
 | Contact (`#pilot`) | `virgo/VirgoPilotCTA.tsx` | Form, writes to `vzir_pilot_signups` |
 
 ## 4. Other pages

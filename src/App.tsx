@@ -31,7 +31,7 @@ function App() {
     <Router>
       {/* overflow-x-clip, not -hidden: `hidden` computes overflow-y to `auto`,
           making this a scroll container and breaking `position: sticky` for
-          every descendant (the sticky navbar). `clip` clips the same
+          every descendant (CapabilityScroller pins). `clip` clips the same
           horizontal overflow without creating one. */}
       <div className="min-h-screen overflow-x-clip" style={{ background: 'var(--ground)', color: 'var(--ink)' }}>
         <ScrollToTop />

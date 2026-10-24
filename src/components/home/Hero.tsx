@@ -1,4 +1,4 @@
-import { ArrowRight, Lock } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { useReveal } from '../../lib/motion';
 import HeroAskDemo from './HeroAskDemo';
 
@@ -132,15 +132,6 @@ export default function Hero() {
             Virgo connects your <Tag>PMS</Tag> <Tag>Accounting</Tag> <Tag>Guest Messages</Tag>{' '}
             <Tag>Inspections</Tag> and <Tag>Maintenance</Tag>, then answers anything instantly
             and flags what needs a person.
-          </p>
-
-          {/* The promise nobody else in this space can make, said once, near the top. */}
-          <p
-            className="font-body order-5 mt-6 md:mt-8"
-            style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '14px', color: 'var(--ink-soft)', margin: 0 }}
-          >
-            <Lock size={15} style={{ color: 'var(--primary)', flexShrink: 0 }} />
-            Read-only. Virgo never changes your systems.
           </p>
         </div>
 
