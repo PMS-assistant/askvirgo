@@ -1,0 +1,276 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+  Design tokens — "Electric Violet on Porcelain".
+  Every colour in the app should reference these, never a raw hex,
+  so a re-theme is a change to this block alone.
+*/
+:root {
+  --ground: #F4F2FB;
+  --ground-deep: #EAE6F7;
+  /* The scroll-driven page wash. Defaults to --ground so the site is correct
+     with no JS and under reduced motion; ScrollColorWash re-writes it as you
+     move down the homepage. Sections that should breathe with the scroll use
+     var(--wash) instead of var(--ground). */
+  --wash: #F4F2FB;
+  --surface: #FFFFFF;
+  --surface-alt: #FBFAFE;
+
+  --ink: #14121A;
+  --ink-soft: #3B3646;
+  --muted: #5A5566;
+  --faint: #8B8598;
+
+  --primary: #7C3AED;
+  --primary-deep: #6428D9;
+  --primary-wash: rgba(124, 58, 237, 0.08);
+  --primary-line: rgba(124, 58, 237, 0.22);
+  --primary-glow: rgba(124, 58, 237, 0.35);
+
+  --pop: #C8F04B;
+  --amber: #F5A623;
+  --amber-wash: rgba(245, 166, 35, 0.10);
+  --danger: #DC2626;
+  --danger-wash: rgba(220, 38, 38, 0.09);
+  --mint: #5EEAD4;
+  --mint-deep: #0F9E8B;
+  --mint-wash: rgba(94, 234, 212, 0.14);
+  --gold: #C9A227;
+  --gold-wash: rgba(201, 162, 39, 0.12);
+  --steel: #5B7A9D;
+  --steel-wash: rgba(91, 122, 157, 0.12);
+  --graphite-wash: rgba(59, 54, 70, 0.08);
+
+  --line: rgba(20, 18, 26, 0.10);
+  --line-soft: rgba(20, 18, 26, 0.06);
+
+  --radius-card: 24px;
+  --radius-pill: 999px;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  /* Film grain. Sits above everything but is pointer-events:none, so it never
+     intercepts a click. Kept very faint — the point is that nobody notices it
+     consciously, only that flat colour stops looking plastic. Hidden under
+     reduced motion isn't necessary (it doesn't move), but it is hidden when
+     printing. */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    pointer-events: none;
+    opacity: 0.038;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  @media print {
+    body::after { display: none; }
+  }
+
+  body {
+    background: var(--wash);
+    color: var(--ink);
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: 'Bricolage Grotesque', 'Plus Jakarta Sans', sans-serif;
+    letter-spacing: -0.03em;
+  }
+
+  .font-display {
+    font-family: 'Bricolage Grotesque', 'Plus Jakarta Sans', sans-serif;
+    letter-spacing: -0.03em;
+  }
+
+  .font-body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+
+  .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 3px;
+  }
+
+  /* Keep anchored sections clear of the sticky navbar. */
+  #virgo,
+  #data-sources,
+  #how-it-works,
+  #pilot,
+  #consulting-contact {
+    scroll-margin-top: 88px;
+  }
+}
+
+@layer components {
+  /* Semrush-style pill buttons — the site's primary action vocabulary. */
+  .pill {
+    @apply inline-flex items-center justify-center gap-2 font-body font-semibold;
+    border-radius: var(--radius-pill);
+    padding: 14px 28px;
+    font-size: 15px;
+    min-height: 50px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    text-decoration: none;
+    transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+  }
+
+  .pill-primary {
+    background: var(--primary);
+    color: #fff;
+    box-shadow: 0 8px 24px var(--primary-glow);
+  }
+
+  .pill-primary:hover {
+    background: var(--primary-deep);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px var(--primary-glow);
+  }
+
+  .pill-ink {
+    background: var(--ink);
+    color: #fff;
+  }
+
+  .pill-ink:hover {
+    transform: translateY(-2px);
+  }
+
+  .pill-outline {
+    background: transparent;
+    color: var(--ink);
+    border-color: var(--line);
+  }
+
+  .pill-outline:hover {
+    background: rgba(20, 18, 26, 0.04);
+    transform: translateY(-2px);
+  }
+
+  /* Liquid glass — frosted, translucent pill with a glossy top highlight and a
+     sheen that sweeps across on hover. Reads best over a busy/gradient ground
+     (the Hero's grid + violet wash), where the blur has something to distort.
+     Pure CSS: no WebGL, no dependency, degrades to a flat tinted pill on
+     browsers without backdrop-filter support. */
+  .pill-glass {
+    position: relative;
+    overflow: hidden;
+    color: var(--ink);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0.22) 100%);
+    border-color: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(14px) saturate(1.4);
+    -webkit-backdrop-filter: blur(14px) saturate(1.4);
+    box-shadow:
+      0 8px 24px rgba(124, 58, 237, 0.16),
+      inset 0 1px 0 rgba(255, 255, 255, 0.8),
+      inset 0 -8px 16px rgba(124, 58, 237, 0.08);
+  }
+
+  .pill-glass::before {
+    content: '';
+    position: absolute;
+    inset: -60% -20%;
+    background: linear-gradient(
+      100deg,
+      transparent 30%,
+      rgba(255, 255, 255, 0.55) 46%,
+      rgba(255, 255, 255, 0.55) 50%,
+      transparent 66%
+    );
+    transform: translateX(-65%);
+    transition: transform 0.7s ease;
+    pointer-events: none;
+  }
+
+  .pill-glass:hover {
+    transform: translateY(-2px);
+    border-color: rgba(255, 255, 255, 0.8);
+    box-shadow:
+      0 12px 32px rgba(124, 58, 237, 0.22),
+      inset 0 1px 0 rgba(255, 255, 255, 0.9),
+      inset 0 -8px 16px rgba(124, 58, 237, 0.1);
+  }
+
+  .pill-glass:hover::before {
+    transform: translateX(65%);
+  }
+
+  /* Shimmering headline text — a slow gradient sweep through the site's own
+     violet/lime accent pair (the same two colours as the Hero's glow), rather
+     than a generic rainbow or purple-to-blue cliché. Reserved for one-off
+     "moment" headlines, not everyday use. */
+  .shine-text {
+    background: linear-gradient(
+      100deg,
+      var(--ink) 24%,
+      var(--primary) 42%,
+      var(--pop) 50%,
+      var(--primary) 58%,
+      var(--ink) 76%
+    );
+    background-size: 250% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: shine-sweep 6s linear infinite;
+  }
+
+  @keyframes shine-sweep {
+    0% { background-position: 220% 0; }
+    100% { background-position: -220% 0; }
+  }
+
+  /* Diagonal hatch used on bento card corners, lifted from the Semrush grid. */
+  .hatch {
+    background-image: repeating-linear-gradient(
+      45deg,
+      currentColor 0 1px,
+      transparent 1px 7px
+    );
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+input[type='text'],
+input[type='email'],
+select,
+textarea {
+  color-scheme: light;
+}
+
+select option {
+  background-color: var(--surface);
+  color: var(--ink);
+}
