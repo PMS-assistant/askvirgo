@@ -46,6 +46,18 @@
   --line: rgba(20, 18, 26, 0.10);
   --line-soft: rgba(20, 18, 26, 0.06);
 
+  /* Homepage hero: the drawn dawn scene shown until a real photo is added. */
+  --dawn-sky: #DCE6F5;
+  --dawn-mist: #ECE8F1;
+  --dawn-peach: #F8DCCB;
+  --dawn-glow: #FFF4EA;
+  --dawn-ground: #C9BFCB;
+  --dawn-block: #8C88A3;
+  --dawn-block-light: #9B97B0;
+  --dawn-block-deep: #7D7996;
+  --dawn-window: #FFE9D2;
+  --card-glass: rgba(255, 255, 255, 0.88);
+
   --radius-card: 24px;
   --radius-pill: 999px;
 }
@@ -244,160 +256,158 @@
     100% { background-position: -220% 0; }
   }
 
-  /* ---------- Homepage hero: "the answer is the headline" ----------
-     A manager's question and Virgo's answer, every figure footnoted to its
-     source. Slides stack in one grid cell so the hero never changes height
-     as they rotate. */
-  .hero-answer {
+  /* ---------- Homepage hero: "photo first" ----------
+     A hotel at dawn fills the hero; headline bottom-left, sample ask card
+     bottom-right. The photo (public/hero-hotel.jpg) sits over a drawn scene
+     that shows when no photo has been added. */
+  .hero-photo {
     position: relative;
-    background: var(--wash);
-    padding: clamp(40px, 7vw, 88px) 0 clamp(28px, 4vw, 44px);
-  }
-  .hero-roles {
+    overflow: hidden;
+    min-height: clamp(560px, 82vh, 780px);
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 12px;
-    margin-bottom: clamp(24px, 3.5vw, 40px);
+    align-items: end;
+    background: var(--dawn-sky);
   }
-  .hero-role {
-    position: relative;
-    background: none;
-    border: 0;
-    border-bottom: 1px solid var(--line);
-    padding: 0 0 12px;
-    text-align: left;
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--faint);
-    cursor: pointer;
-    transition: color 0.2s ease;
-  }
-  .hero-role:hover,
-  .hero-role.is-on { color: var(--ink); }
-  .hero-role-bar {
+  .hero-scene {
     position: absolute;
-    left: 0;
-    bottom: -1px;
-    height: 2px;
-    width: 0;
-    background: var(--primary);
+    inset: 0;
+    background: linear-gradient(180deg, var(--dawn-sky) 0%, var(--dawn-mist) 48%, var(--dawn-peach) 82%);
   }
-  .hero-role.is-on .hero-role-bar { animation: hero-progress linear forwards; }
-  @keyframes hero-progress { from { width: 0; } to { width: 100%; } }
-
-  .hero-slides { display: grid; }
-  .hero-slide {
-    grid-area: 1 / 1;
+  .hero-sun {
+    position: absolute;
+    width: 220px;
+    height: 220px;
+    border-radius: 50%;
+    left: 62%;
+    top: 30%;
+    background: radial-gradient(circle, var(--dawn-glow) 0%, var(--dawn-peach) 55%, transparent 72%);
+  }
+  .hero-scene svg { position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 62%; }
+  .hero-photo-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    object-fit: cover;
+    object-position: center 40%;
+  }
+  /* Lifts the headline off any photo: a soft ground-coloured wash rising from
+     the bottom-left, where the text sits. */
+  .hero-scrim {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      linear-gradient(0deg, var(--wash) 0%, transparent 46%),
+      linear-gradient(90deg, var(--wash) 0%, transparent 55%);
+    opacity: 0.85;
+  }
+  .hero-photo-inner {
+    position: relative;
+    width: 100%;
     display: grid;
-    gap: clamp(22px, 3vw, 32px);
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(8px);
-    transition: opacity 0.45s ease, transform 0.45s ease, visibility 0s linear 0.45s;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    gap: 28px 56px;
+    align-items: end;
+    padding-top: clamp(64px, 10vw, 120px);
+    padding-bottom: clamp(28px, 4vw, 48px);
   }
-  .hero-slide.is-on {
-    opacity: 1;
-    visibility: visible;
-    transform: none;
-    transition: opacity 0.45s ease, transform 0.45s ease, visibility 0s;
-  }
-  .hero-asked {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 6px 14px;
-    margin: 0;
-  }
-  .hero-asked-time { font-size: 12px; color: var(--faint); letter-spacing: 0.04em; }
-  .hero-asked q {
-    font-style: italic;
+  .hero-photo-copy { display: grid; justify-items: start; gap: 18px; }
+  .hero-photo-title {
     font-weight: 300;
-    font-size: clamp(19px, 2.2vw, 25px);
-    color: var(--ink-soft);
-  }
-  .hero-answer-text {
-    font-weight: 300;
-    font-size: clamp(30px, 3.6vw, 46px);
-    line-height: 1.14;
-    letter-spacing: -0.02em;
+    font-size: clamp(44px, 6.4vw, 88px);
+    line-height: 0.98;
+    letter-spacing: -0.03em;
     color: var(--ink);
-    max-width: 30ch;
-    margin: 14px 0 0;
+    margin: 0;
+    max-width: 15ch;
     text-wrap: balance;
+  }
+  .hero-photo-sub {
+    margin: 0;
+    max-width: 44ch;
+    font-size: clamp(16px, 1.4vw, 18px);
+    line-height: 1.55;
+    color: var(--ink);
+  }
+
+  .hero-askcard {
+    background: var(--card-glass);
+    border: 1px solid var(--surface);
+    border-radius: 20px;
+    padding: 20px;
+    display: grid;
+    gap: 14px;
+    box-shadow: 0 24px 60px rgba(20, 18, 26, 0.16);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+  .hero-askcard-label { margin: 0; font-size: 12.5px; color: var(--muted); }
+  .hero-askcard-body { display: grid; min-height: 172px; align-content: start; }
+  .hero-askcard-swap { display: grid; gap: 12px; animation: hero-swap 0.45s ease both; }
+  @keyframes hero-swap { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  .hero-askcard-q {
+    margin: 0;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 10px 14px;
+    font-size: 14.5px;
+    color: var(--ink);
+    display: grid;
+    gap: 3px;
+  }
+  .hero-askcard-role { font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--faint); }
+  .hero-askcard-a {
+    margin: 0;
+    font-size: clamp(19px, 1.7vw, 22px);
+    line-height: 1.35;
+    color: var(--ink);
   }
   .hero-fig {
     text-decoration: underline;
     text-decoration-color: var(--primary);
-    text-decoration-thickness: 0.06em;
-    text-underline-offset: 0.14em;
+    text-decoration-thickness: 0.07em;
+    text-underline-offset: 0.16em;
     white-space: nowrap;
   }
-  .hero-fig sup {
-    /* Tailwind's preflight pins sup to baseline + top:-0.5em of its own (tiny)
-       size, which barely lifts it at 0.32em; lift it by the answer's size. */
-    top: -1.6em;
-    font-size: 0.32em;
-    font-weight: 600;
-    color: var(--primary);
-    margin-left: 0.08em;
-  }
-  .hero-eyebrow {
-    font-size: 11.5px;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
+  .hero-askcard-src { margin: 0; font-size: 12.5px; color: var(--muted); }
+  .hero-src {
     color: var(--ink-soft);
-    margin: 0 0 12px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 1px 7px;
+    white-space: nowrap;
   }
-  .hero-notes {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0 28px;
-    border-top: 1px solid var(--ink);
+  .hero-askcard-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .hero-chip {
+    position: relative;
+    overflow: hidden;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--ink-soft);
+    background: var(--surface-alt);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-pill);
+    padding: 5px 12px;
+    cursor: pointer;
   }
-  .hero-note {
-    display: grid;
-    grid-template-columns: 22px 1fr;
-    gap: 10px;
-    padding: 13px 0;
-    border-bottom: 1px solid var(--line);
-  }
-  .hero-note-n { font-size: 12px; font-weight: 600; color: var(--primary); padding-top: 2px; }
-  .hero-note b { display: block; font-weight: 600; font-size: 14px; color: var(--ink); }
-  .hero-note span span { display: block; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
-  .hero-sample {
-    font-size: 10.5px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--faint);
-    margin: 10px 0 0;
-  }
-  .hero-foot {
-    margin-top: clamp(28px, 4vw, 44px);
-    border-top: 1px solid var(--line);
-    padding-top: 22px;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: 18px 32px;
-    align-items: center;
-  }
-  .hero-foot-text {
-    margin: 0;
-    font-size: clamp(16px, 1.5vw, 18px);
-    line-height: 1.55;
-    max-width: 50ch;
-    color: var(--muted);
-  }
-  .hero-foot-text strong { color: var(--ink); font-weight: 600; }
-  .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; }
-  .hero-readonly { display: inline-flex; align-items: center; gap: 7px; font-size: 13.5px; color: var(--ink-soft); }
+  .hero-chip:hover { border-color: var(--ink-soft); }
+  .hero-chip.is-on { color: var(--ink); border-color: var(--ink); background: var(--surface); }
+  .hero-chip-bar { position: absolute; left: 0; bottom: 0; height: 2px; width: 0; background: var(--primary); }
+  .hero-chip.is-on .hero-chip-bar { animation: hero-progress linear forwards; }
+  @keyframes hero-progress { from { width: 0; } to { width: 100%; } }
+  .hero-readonly { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; color: var(--ink-soft); }
 
   @media (max-width: 900px) {
-    .hero-roles { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .hero-notes { grid-template-columns: 1fr; }
-    .hero-foot { grid-template-columns: 1fr; }
+    .hero-photo { min-height: 0; }
+    .hero-photo-inner { grid-template-columns: 1fr; padding-top: clamp(200px, 48vw, 320px); }
+    .hero-scrim {
+      background: linear-gradient(0deg, var(--wash) 0%, var(--wash) 38%, transparent 80%);
+      opacity: 0.9;
+    }
   }
 
   /* Diagonal hatch used on bento card corners, lifted from the Semrush grid. */

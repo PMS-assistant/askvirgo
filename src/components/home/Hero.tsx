@@ -1,100 +1,94 @@
-import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
+import { useCallback, useEffect, useState, type ReactNode } from 'react';
 import { ArrowRight, Lock } from 'lucide-react';
 import { useReveal } from '../../lib/motion';
 
-/* "The answer is the headline" (option A1 from the askvirgo.co.uk first-screen
-   mockups). Instead of a product screenshot, the hero IS a manager's question
-   and Virgo's answer, with every figure footnoted to the system it came from.
-   Four roles take turns every ROTATE_MS; hovering or focusing pauses it, and
-   the role tabs jump straight to one.
+/* "Photo first" (option C from the askvirgo.co.uk first-screen mockups).
+   A hotel at dawn fills the hero; the headline sits on it, and a sample ask
+   card lets a visitor tap a question and see how Virgo answers. The card
+   rotates through four roles every ROTATE_MS; hover or focus pauses it.
 
-   Copy rule (see CLAUDE.md): every source named here must be a connector that
-   is actually live — booking system (PMS), Xero, WhatsApp. Weather, events and
-   competitor rates are roadmap only, so they never appear as a source. All
-   figures are a clearly labelled sample hotel, not a customer. */
+   Photo: drop a licensed image at public/hero-hotel.jpg (about 2400px wide,
+   landscape, a hotel exterior or lobby in early light). Until that file
+   exists the drawn dawn scene below shows instead, so the hero never breaks.
+
+   Copy rule (see CLAUDE.md): sources named here must be live connectors —
+   booking system (PMS), Xero, WhatsApp. Weather, events and competitor rates
+   are roadmap only. All figures are a clearly labelled sample hotel. */
 
 const ROTATE_MS = 5000;
+const PHOTO_SRC = '/hero-hotel.jpg';
 
-type Note = { source: string; detail: string };
-type Slide = { role: string; time: string; question: string; answer: ReactNode; notes: [Note, Note, Note] };
+type Sample = { role: string; question: string; answer: ReactNode; sources: string[] };
 
-function Fig({ n, children }: { n: number; children: ReactNode }) {
-  return (
-    <span className="hero-fig">
-      {children}
-      <sup className="font-mono">{n}</sup>
-    </span>
-  );
+function Fig({ children }: { children: ReactNode }) {
+  return <span className="hero-fig">{children}</span>;
 }
 
-const SLIDES: Slide[] = [
+const SAMPLES: Sample[] = [
   {
     role: 'General manager',
-    time: '07:02',
     question: 'How are we tracking against last month?',
-    answer: (
-      <>£47,200 so far, <Fig n={1}>up 18%</Fig> on last month. Rooms brought in <Fig n={2}>£39,800</Fig> and costs are <Fig n={3}>on budget</Fig>.</>
-    ),
-    notes: [
-      { source: 'Booking system', detail: '1–24 Oct against 1–24 Sep' },
-      { source: 'Booking system', detail: 'RevPAR £89.40 · 445 room nights' },
-      { source: 'Xero', detail: 'Profit and loss, month to date' },
-    ],
+    answer: <>£47,200 so far, <Fig>up 18%</Fig> on last month. Rooms brought in <Fig>£39,800</Fig> and costs are <Fig>on budget</Fig>.</>,
+    sources: ['Booking system', 'Xero'],
   },
   {
     role: 'Owner',
-    time: '08:15',
     question: 'How did last week compare with a year ago?',
-    answer: (
-      <>Revenue was <Fig n={1}>up 9%</Fig> at £21,400, but commission took <Fig n={2}>£3,100</Fig>, so profit grew <Fig n={3}>only 4%</Fig>.</>
-    ),
-    notes: [
-      { source: 'Booking system', detail: '13–19 Oct 2026 against 14–20 Oct 2025' },
-      { source: 'Booking system', detail: 'Online travel agent bookings, by channel' },
-      { source: 'Xero', detail: 'Profit and loss, same two weeks' },
-    ],
+    answer: <>Revenue was <Fig>up 9%</Fig> at £21,400, but commission took <Fig>£3,100</Fig>, so profit grew <Fig>only 4%</Fig>.</>,
+    sources: ['Booking system', 'Xero'],
   },
   {
     role: 'Accountant',
-    time: '09:30',
     question: 'Do September’s folios match the accounts?',
-    answer: (
-      <>Within <Fig n={1}>£312</Fig>. The gap is <Fig n={2}>2 unpaid folios</Fig> and <Fig n={3}>a refund</Fig> not yet posted in Xero.</>
-    ),
-    notes: [
-      { source: 'Booking system and Xero', detail: 'September close, folios against ledger' },
-      { source: 'Booking system', detail: 'Rooms 114 and 207, checked out unpaid' },
-      { source: 'Xero', detail: '£86 refund issued 28 Sep, not posted' },
-    ],
+    answer: <>Within <Fig>£312</Fig>. The gap is <Fig>2 unpaid folios</Fig> and <Fig>a refund</Fig> not yet posted in Xero.</>,
+    sources: ['Booking system', 'Xero'],
   },
   {
     role: 'Duty manager',
-    time: '06:45',
     question: 'Anything I should know before my shift?',
-    answer: (
-      <><Fig n={1}>3 rooms</Fig> won’t be ready for 11:00 arrivals, <Fig n={2}>a guest</Fig> needs a late check-in, and <Fig n={3}>2 bills</Fig> are still open from last night.</>
-    ),
-    notes: [
-      { source: 'Booking system', detail: 'Housekeeping status, rooms 301, 305, 312' },
-      { source: 'WhatsApp', detail: 'Message received 06:31, needs a person' },
-      { source: 'Booking system', detail: 'Rooms 118 and 204, balance outstanding' },
-    ],
+    answer: <><Fig>3 rooms</Fig> won’t be ready for 11:00 arrivals, <Fig>a guest</Fig> needs a late check-in, and <Fig>2 bills</Fig> are still open.</>,
+    sources: ['Booking system', 'WhatsApp'],
   },
 ];
+
+/* Stand-in for the photo: a pale dawn sky, a low sun and a row of hotel
+   blocks with a few lit windows. Colours come from the --dawn-* tokens. */
+function DawnScene() {
+  const windows: [number, number, number, number][] = [
+    [130, 180, 26, 34], [190, 180, 26, 34], [250, 180, 26, 34], [310, 180, 26, 34], [370, 180, 26, 34],
+    [130, 250, 26, 34], [250, 250, 26, 34], [370, 250, 26, 34],
+    [560, 150, 24, 30], [620, 150, 24, 30], [680, 210, 24, 30], [560, 270, 24, 30],
+    [860, 220, 26, 32], [980, 220, 26, 32], [1040, 280, 26, 32],
+  ];
+  return (
+    <div className="hero-scene" aria-hidden>
+      <div className="hero-sun" />
+      <svg viewBox="0 0 1200 400" preserveAspectRatio="xMidYMax slice">
+        <rect x="0" y="330" width="1200" height="70" style={{ fill: 'var(--dawn-ground)' }} />
+        <rect x="80" y="150" width="380" height="190" style={{ fill: 'var(--dawn-block)' }} />
+        <rect x="120" y="80" width="300" height="80" style={{ fill: 'var(--dawn-block-light)' }} />
+        <rect x="520" y="120" width="250" height="220" style={{ fill: 'var(--dawn-block-deep)' }} />
+        <rect x="820" y="190" width="320" height="150" style={{ fill: 'var(--dawn-block)' }} />
+        <g style={{ fill: 'var(--dawn-window)' }} opacity="0.85">
+          {windows.map(([x, y, w, h]) => <rect key={`${x}-${y}`} x={x} y={y} width={w} height={h} />)}
+        </g>
+      </svg>
+    </div>
+  );
+}
 
 export default function Hero() {
   const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
-  // Bumped on every manual pick so the timer and the progress bar restart.
   const [cycle, setCycle] = useState(0);
-  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
+  const [photoOk, setPhotoOk] = useState(true);
 
-  const rotatorRef = useReveal<HTMLDivElement>({ y: 20, duration: 700, delay: 0 });
-  const footRef = useReveal<HTMLDivElement>({ y: 16, duration: 650, delay: 200 });
+  const copyRef = useReveal<HTMLDivElement>({ y: 24, duration: 750, delay: 0 });
+  const cardRef = useReveal<HTMLDivElement>({ y: 20, duration: 700, delay: 180 });
 
   useEffect(() => {
     if (paused) return;
-    const id = window.setTimeout(() => setActive((i) => (i + 1) % SLIDES.length), ROTATE_MS);
+    const id = window.setTimeout(() => setActive((i) => (i + 1) % SAMPLES.length), ROTATE_MS);
     return () => window.clearTimeout(id);
   }, [active, paused, cycle]);
 
@@ -103,112 +97,86 @@ export default function Hero() {
     setCycle((c) => c + 1);
   }, []);
 
-  const onTabKey = (e: React.KeyboardEvent, i: number) => {
-    if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft') return;
-    e.preventDefault();
-    const next = (i + (e.key === 'ArrowRight' ? 1 : -1) + SLIDES.length) % SLIDES.length;
-    pick(next);
-    tabRefs.current[next]?.focus();
-  };
+  const s = SAMPLES[active];
 
   return (
-    <section className="hero-answer" aria-label="Virgo answering questions from four roles">
-      <div className="relative max-w-[1240px] mx-auto px-6">
+    <section className="hero-photo" aria-label="Virgo">
+      <DawnScene />
+      {photoOk && (
+        <img
+          className="hero-photo-img"
+          src={PHOTO_SRC}
+          alt=""
+          onError={() => setPhotoOk(false)}
+        />
+      )}
+      <div className="hero-scrim" aria-hidden />
+
+      <div className="hero-photo-inner max-w-[1240px] mx-auto px-6">
+        <div ref={copyRef} style={{ opacity: 0 }} className="hero-photo-copy">
+          <h1 className="font-answer hero-photo-title">Good morning. Here’s your hotel.</h1>
+          <p className="font-body hero-photo-sub">
+            One question to Virgo replaces a morning of logging into the booking system, the accounts and the guest inbox.
+          </p>
+          {/* Placeholder target: the pilot form at #pilot, until a real
+              booking link is chosen. */}
+          <a href="#pilot" className="pill pill-ink">
+            Book a demo <ArrowRight size={15} />
+          </a>
+        </div>
+
         <div
-          ref={rotatorRef}
+          ref={cardRef}
           style={{ opacity: 0 }}
+          className="hero-askcard"
           onMouseEnter={() => setPaused(true)}
           onMouseLeave={() => setPaused(false)}
           onFocus={() => setPaused(true)}
           onBlur={(e) => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setPaused(false); }}
         >
-          <div className="hero-roles" role="tablist" aria-label="Who is asking">
-            {SLIDES.map((s, i) => (
+          <p className="font-body hero-askcard-label">See how Virgo answers The Meridian, a sample hotel</p>
+
+          <div className="hero-askcard-body" aria-live="polite">
+            <div key={`q-${active}-${cycle}`} className="hero-askcard-swap">
+              <p className="hero-askcard-q font-body">
+                <span className="font-mono hero-askcard-role">{s.role}</span>
+                {s.question}
+              </p>
+              <p className="font-answer hero-askcard-a">{s.answer}</p>
+              <p className="hero-askcard-src font-body">
+                From{' '}
+                {s.sources.map((src, k) => (
+                  <span key={src}>
+                    <span className="hero-src">{src}</span>
+                    {k < s.sources.length - 1 ? ' and ' : ''}
+                  </span>
+                ))}
+              </p>
+            </div>
+          </div>
+
+          <div className="hero-askcard-chips" role="group" aria-label="Sample questions">
+            {SAMPLES.map((q, i) => (
               <button
-                key={s.role}
-                ref={(el) => { tabRefs.current[i] = el; }}
+                key={q.role}
                 type="button"
-                role="tab"
-                id={`hero-tab-${i}`}
-                aria-selected={i === active}
-                aria-controls={`hero-slide-${i}`}
-                tabIndex={i === active ? 0 : -1}
-                className={`hero-role font-body${i === active ? ' is-on' : ''}`}
+                className={`hero-chip font-body${i === active ? ' is-on' : ''}`}
+                aria-pressed={i === active}
                 onClick={() => pick(i)}
-                onKeyDown={(e) => onTabKey(e, i)}
               >
-                {s.role}
+                {q.role}
                 <i
                   key={i === active ? `bar-${active}-${cycle}` : 'bar'}
-                  className="hero-role-bar"
-                  style={{
-                    animationDuration: `${ROTATE_MS}ms`,
-                    animationPlayState: paused ? 'paused' : 'running',
-                  }}
+                  className="hero-chip-bar"
+                  style={{ animationDuration: `${ROTATE_MS}ms`, animationPlayState: paused ? 'paused' : 'running' }}
                 />
               </button>
             ))}
           </div>
 
-          <div className="hero-slides">
-            {SLIDES.map((s, i) => (
-              <div
-                key={s.role}
-                id={`hero-slide-${i}`}
-                role="tabpanel"
-                aria-labelledby={`hero-tab-${i}`}
-                aria-hidden={i !== active}
-                className={`hero-slide${i === active ? ' is-on' : ''}`}
-              >
-                <div>
-                  <p className="hero-asked">
-                    <span className="font-mono hero-asked-time">{s.time} · {s.role} asked</span>
-                    <q className="font-answer">{s.question}</q>
-                  </p>
-                  {/* The answer is the page's headline for the active slide only;
-                      hidden slides render it as a plain paragraph. */}
-                  {i === active ? (
-                    <h1 className="font-answer hero-answer-text">{s.answer}</h1>
-                  ) : (
-                    <p className="font-answer hero-answer-text">{s.answer}</p>
-                  )}
-                </div>
-
-                <div aria-label="Where these figures came from">
-                  <p className="font-mono hero-eyebrow">Where these figures came from</p>
-                  <ol className="hero-notes">
-                    {s.notes.map((n, k) => (
-                      <li key={k} className="hero-note">
-                        <span className="font-mono hero-note-n">{k + 1}</span>
-                        <span>
-                          <b>{n.source}</b>
-                          <span>{n.detail}</span>
-                        </span>
-                      </li>
-                    ))}
-                  </ol>
-                  <p className="font-mono hero-sample">Sample hotel · The Meridian</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        <div ref={footRef} style={{ opacity: 0 }} className="hero-foot">
-          <p className="font-body hero-foot-text">
-            <strong>Ask your hotel anything.</strong>{' '}
-            <span>Virgo reads your booking system, accounts and guest messages, and answers in plain English with a source for every figure.</span>
-          </p>
-          <div className="hero-actions">
-            {/* Placeholder target: the pilot form at #pilot, until a real
-                booking link is chosen. */}
-            <a href="#pilot" className="pill pill-ink">
-              Book a demo <ArrowRight size={15} />
-            </a>
-            <span className="font-body hero-readonly">
-              <Lock size={14} aria-hidden /> Read-only
-            </span>
-          </div>
+          <span className="font-body hero-readonly">
+            <Lock size={14} aria-hidden /> Read-only. Never changes your systems.
+          </span>
         </div>
       </div>
     </section>
