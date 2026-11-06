@@ -45,7 +45,7 @@ export default function ScrollToTop() {
       const el = document.getElementById(hash.slice(1));
       // The Glide trial (ScrollFlow version 2) owns scrolling, so ask it to move.
       const lenis = (window as unknown as { __lenis?: { scrollTo: (t: HTMLElement, o: { offset: number }) => void } }).__lenis;
-      if (el && lenis) lenis.scrollTo(el, { offset: -88 });
+      if (el && lenis) lenis.scrollTo(el, { offset: 0 }); // lenis already honours scroll-margin-top
       else el?.scrollIntoView({ behavior: 'smooth' });
       clearHash();
     }, 100);
