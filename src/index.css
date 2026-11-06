@@ -328,7 +328,7 @@ select option {
     background:
       linear-gradient(180deg, var(--veil-mid) 0%, var(--veil-clear) 18%),
       linear-gradient(0deg, var(--veil-mid) 0%, var(--veil-clear) 30%),
-      linear-gradient(90deg, var(--veil-strong) 0%, var(--veil-mid) 44%, var(--veil-soft) 66%, var(--veil-clear) 82%);
+      linear-gradient(90deg, var(--veil-strong) 0%, var(--veil-mid) 30%, var(--veil-soft) 58%, var(--veil-clear) 76%);
   }
   .hv-inner {
     position: relative; z-index: 2; align-self: end; width: 100%; max-width: 1440px; margin: 0 auto;
