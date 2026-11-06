@@ -14,7 +14,7 @@ React 18 · TypeScript · Vite · Tailwind CSS · React Router · anime.js v4 ·
 
 | Route | Page |
 |---|---|
-| `/` | Home: one continuous scroll (hero, problem, before/after, capabilities, integrations, how it works, contact form) |
+| `/` | Home: one continuous scroll (hero, what Virgo is, inside Virgo, how Virgo works, contact form) |
 | `/privacy` | Privacy policy. **Draft** placeholder text, with a visible Draft banner |
 | `/terms` | Terms of use. **Draft** placeholder text, with a visible Draft banner |
 | `*` | 404 page |
@@ -133,7 +133,7 @@ src/
     supabase.ts          Supabase client
   components/
     home/                Homepage sections and visual effects
-    virgo/               Problem, how it works, contact form
+    virgo/               Contact form
     legal/               Shared layout for the draft legal pages
     layout/              Navbar, Footer, ScrollToTop
   pages/                 HomePage, PrivacyPage, TermsPage, NotFoundPage

@@ -1,144 +1,141 @@
-import { ArrowRight } from 'lucide-react';
-import { useReveal } from '../../lib/motion';
-import HeroAskDemo from './HeroAskDemo';
+import { useEffect, useRef, useState } from 'react';
+import { ArrowRight, ArrowUp, Lock } from 'lucide-react';
+import { prefersReducedMotion } from '../../lib/motion';
 
-/* Structure borrowed from the OmniRoute-style hero: a plain colour eyebrow,
-   a big left-aligned headline, a proof row under the CTAs, and a visual
-   sitting beside the text rather than under it — all still on the site's
-   own "Electric Violet on Porcelain" tokens, not a dark theme. */
+/* The first screen: "Good morning." (or afternoon or evening, by the
+   visitor's clock) above the big line "Talk to your hotel like you talk to
+   your team.", over a real photo of
+   a hotel lobby (public/images/hero-lobby*.jpg, Unsplash License, photo by
+   Frames For Your Heart), with a "Try asking" card on the right. A light veil
+   keeps the text side readable; the photo shows clearly on the right. The card runs on
+   its own (the owner's rule: automatic, nothing to click): a question types
+   itself into the box, its suggestion lights, the answer appears with its
+   sources, and after a pause the next one starts. It pauses off screen and
+   shows the first answer still under reduced motion.
 
-/* Inline system tag, dropped straight into the subcopy sentence — the "what
-   it connects to" list reads as distinct chips instead of more prose, which
-   is both shorter and the "different, unique" treatment that was asked for. */
-function Tag({ children }: { children: string }) {
-  return (
-    <span
-      className="font-mono"
-      style={{
-        display: 'inline-flex', alignItems: 'center', whiteSpace: 'nowrap',
-        fontSize: '0.72em', fontWeight: 700, letterSpacing: '0.2px',
-        color: 'var(--primary)', background: 'var(--primary-wash)',
-        border: '1px solid var(--primary-line)', borderRadius: '6px',
-        padding: '1px 7px', margin: '0 1px',
-      }}
-    >
-      {children}
-    </span>
-  );
+   Every answer is sample data for the fictional Meridian and uses the same
+   figures as the rest of the page (virgo.pdf use cases UC-2, UC-5, UC-12,
+   UC-15). Sources are named by category, never by vendor. */
+
+type Ask = { q: string; a: string; sources: string[] };
+
+const ASKS: Ask[] = [
+  { q: 'How did we do last week?',
+    a: 'Rooms took £21,400 last week. After £3,100 in commission and the week’s costs, £8,500 was left.',
+    sources: ['PMS', 'Channel manager', 'Accounting'] },
+  { q: 'Who’s arriving today?',
+    a: '12 arrivals. Ms Patel is due first, at 14:00, and her room, 214, is still being cleaned.',
+    sources: ['PMS'] },
+  { q: 'Any guest messages need me?',
+    a: 'Two need a person: a complaint about the heating in room 312, and a request for an accessible room.',
+    sources: ['Guest messaging'] },
+  { q: 'Costs this month?',
+    a: 'On budget. Revenue is £47,200 so far, up 18% on last month.',
+    sources: ['Accounting', 'PMS'] },
+];
+
+const TYPE_MS = 42;      // per character
+const THINK_MS = 650;    // between the question landing and the answer
+const HOLD_MS = 4600;    // how long an answer stays
+
+/* The greeting follows the visitor's own clock (the browser's time zone):
+   morning until 12:00, afternoon until 17:00, evening after that and
+   through the night. */
+function greetingFor(hour: number) {
+  if (hour >= 5 && hour < 12) return 'Good morning.';
+  if (hour >= 12 && hour < 17) return 'Good afternoon.';
+  return 'Good evening.';
 }
 
 export default function Hero() {
-  const eyebrowRef = useReveal<HTMLParagraphElement>({ y: 14, duration: 600, delay: 0 });
-  const headlineRef = useReveal<HTMLHeadingElement>({ y: 28, duration: 800, delay: 120 });
-  const subRef = useReveal<HTMLParagraphElement>({ y: 20, duration: 700, delay: 260 });
-  const ctaRef = useReveal<HTMLDivElement>({ y: 18, duration: 650, delay: 380 });
+  const [greeting, setGreeting] = useState(() => greetingFor(new Date().getHours()));
+
+  const rootRef = useRef<HTMLElement>(null);
+  const [i, setI] = useState(0);
+  const [typed, setTyped] = useState(0);
+  const [phase, setPhase] = useState<'typing' | 'thinking' | 'answer'>('typing');
+  const [running, setRunning] = useState(false);
+  const still = useRef(false);
+
+  // Run only while the hero is on screen; under reduced motion show one answer, still.
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root) return;
+    if (prefersReducedMotion() || !('IntersectionObserver' in window)) {
+      still.current = true;
+      setTyped(ASKS[0].q.length);
+      setPhase('answer');
+      return;
+    }
+    const io = new IntersectionObserver(entries => setRunning(entries[entries.length - 1].isIntersecting), { threshold: 0.2 });
+    io.observe(root);
+    return () => io.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (still.current || !running) return;
+    const q = ASKS[i].q;
+    let t: number;
+    if (phase === 'typing') {
+      t = window.setTimeout(() => (typed < q.length ? setTyped(typed + 1) : setPhase('thinking')), typed === 0 ? 400 : TYPE_MS);
+    } else if (phase === 'thinking') {
+      t = window.setTimeout(() => setPhase('answer'), THINK_MS);
+    } else {
+      t = window.setTimeout(() => { setI((i + 1) % ASKS.length); setTyped(0); setPhase('typing'); }, HOLD_MS);
+    }
+    return () => clearTimeout(t);
+  }, [i, typed, phase, running]);
+
+  // Keep the greeting right if the page stays open past 12:00 or 17:00.
+  useEffect(() => {
+    const id = window.setInterval(() => setGreeting(greetingFor(new Date().getHours())), 60_000);
+    return () => clearInterval(id);
+  }, []);
+
+  const ask = ASKS[i];
 
   return (
-    <section
-      style={{
-        position: 'relative',
-        overflow: 'hidden',
-        background: 'var(--wash)',
-        padding: 'clamp(64px, 10vw, 120px) 0 clamp(56px, 7vw, 88px)',
-      }}
-    >
-      {/* Graph-paper grid, faded out toward the edges — the "colour effects" texture. */}
-      <div
-        aria-hidden
-        style={{
-          position: 'absolute', inset: 0, pointerEvents: 'none',
-          backgroundImage:
-            'linear-gradient(var(--line-soft) 1px, transparent 1px), linear-gradient(90deg, var(--line-soft) 1px, transparent 1px)',
-          backgroundSize: '44px 44px',
-          maskImage: 'radial-gradient(ellipse 75% 65% at 38% 25%, #000 40%, transparent 88%)',
-          WebkitMaskImage: 'radial-gradient(ellipse 75% 65% at 38% 25%, #000 40%, transparent 88%)',
-        }}
-      />
-      <div
-        aria-hidden
-        style={{
-          position: 'absolute', top: '-22%', left: '18%',
-          width: 'min(900px, 100vw)', height: '560px', pointerEvents: 'none',
-          background: 'radial-gradient(ellipse at center, rgba(124,58,237,0.18) 0%, rgba(200,240,75,0.07) 42%, transparent 70%)',
-          filter: 'blur(8px)',
-        }}
-      />
-
-      <div className="relative max-w-[1240px] mx-auto px-6 grid lg:grid-cols-2 gap-x-16 gap-y-14 items-center">
-        <div className="flex flex-col">
-          {/* Product-only eyebrow: the site is Virgo's own, no parent brand. */}
-          <p
-            ref={eyebrowRef}
-            className="font-mono"
-            style={{
-              opacity: 0,
-              fontSize: '13px', letterSpacing: '1.8px', textTransform: 'uppercase',
-              marginBottom: '18px',
-            }}
-          >
-            <span style={{ color: 'var(--primary)', fontWeight: 700 }}>Virgo</span>
-            <span style={{ color: 'var(--faint)' }}> · AI hotel intelligence</span>
-          </p>
-
-          <h1
-            ref={headlineRef}
-            className="font-display"
-            style={{
-              opacity: 0,
-              fontWeight: 800,
-              fontSize: 'clamp(42px, 5.6vw, 80px)',
-              lineHeight: 0.98,
-              color: 'var(--ink)',
-              marginBottom: '22px',
-            }}
-          >
-            {/* Below md this breaks after "system" so the CTA (reordered
-                right after the heading on mobile, see below) has a short
-                last line to sit near. At md+ the br is display:none and
-                the {' '} keeps the words apart, so it reads exactly like
-                the original single-line-wrapping headline. */}
-            Run every system{' '}
-            <br className="md:hidden" />
-            with one question.
+    <section ref={rootRef} className="hv">
+      <div className="hv-inner">
+        <div className="hv-copy">
+          <h1>
+            <span className="hv-greet">{greeting}</span>
+            <span className="hv-line">Talk to your hotel like you talk to your team.</span>
           </h1>
-
-          {/* One action, not two — a single, unambiguous next step. Placeholder
-              target: scrolls to the existing pilot form at #pilot until a real
-              booking link (Calendly or similar) is supplied to swap in here.
-              Ordered right after the heading on mobile, back to its original
-              spot after the subcopy from md up. */}
-          <div
-            ref={ctaRef}
-            className="order-3 md:order-4 mb-8 md:mb-0"
-            style={{ opacity: 0, display: 'flex', gap: '12px', flexWrap: 'wrap' }}
-          >
-            <a href="#pilot" className="pill pill-glass">
-              Book a demo <ArrowRight size={15} />
+          <p>Ask one question instead of logging into the PMS, the accounts and the guest inbox.</p>
+          <div className="hv-actions">
+            <a href="#pilot" className="a1-btn">
+              Book a demo <ArrowRight size={17} aria-hidden />
             </a>
+            <a href="#how-it-works" className="hv-link">See how it works</a>
           </div>
-
-          <p
-            ref={subRef}
-            className="font-body order-4 md:order-3"
-            style={{
-              opacity: 0,
-              fontSize: 'clamp(16px, 1.4vw, 19px)',
-              lineHeight: 1.6,
-              color: 'var(--muted)',
-              maxWidth: '520px',
-              margin: '0 0 32px',
-            }}
-          >
-            Virgo connects your <Tag>PMS</Tag> <Tag>Accounting</Tag> <Tag>Guest Messages</Tag>{' '}
-            <Tag>Inspections</Tag> and <Tag>Maintenance</Tag>, then answers anything instantly
-            and flags what needs a person.
-          </p>
         </div>
 
-        {/* The product doing the thing the headline promises: a question types
-            itself, the sources light up, an answer lands. Loops. */}
-        <div>
-          <HeroAskDemo />
+        <div className="hv-card" aria-label="A sample question and Virgo’s answer">
+          <span className="hv-card-label">Try asking</span>
+          <div className="hv-input">
+            <span className="hv-typed">
+              {ask.q.slice(0, typed)}
+              {phase === 'typing' && <i className="hv-caret" aria-hidden />}
+            </span>
+            <span className={phase === 'thinking' ? 'hv-send hv-send-on' : 'hv-send'} aria-hidden><ArrowUp size={15} /></span>
+          </div>
+          <div className="hv-chips" aria-hidden>
+            {ASKS.map((x, k) => (
+              <span key={x.q} className={k === i ? 'hv-chip hv-chip-on' : 'hv-chip'}>{x.q}</span>
+            ))}
+          </div>
+          <div className="hv-answer-wrap">
+            <div className={phase === 'answer' ? 'hv-answer hv-answer-on' : 'hv-answer'}>
+              <p>{ask.a}</p>
+              <div className="hv-src">
+                <span className="hv-tags">{ask.sources.map(s => <span key={s}>{s}</span>)}</span>
+                <span className="hv-sample">Sample data</span>
+              </div>
+            </div>
+            {phase === 'thinking' && <span className="hv-dots" aria-hidden><i /><i /><i /></span>}
+          </div>
+          <span className="hv-ro"><Lock size={14} aria-hidden />Read-only on your systems.</span>
         </div>
       </div>
     </section>

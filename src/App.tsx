@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ArrowUp } from 'lucide-react';
 import { useMountAnimation } from './lib/motion';
-import AnnouncementBanner from './components/home/AnnouncementBanner';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import ScrollToTop from './components/layout/ScrollToTop';
 import HomePage from './pages/HomePage';
+import AboutPage from './pages/AboutPage';
 import PrivacyPage from './pages/PrivacyPage';
 import TermsPage from './pages/TermsPage';
 import NotFoundPage from './pages/NotFoundPage';
@@ -31,15 +31,15 @@ function App() {
     <Router>
       {/* overflow-x-clip, not -hidden: `hidden` computes overflow-y to `auto`,
           making this a scroll container and breaking `position: sticky` for
-          every descendant (CapabilityScroller pins). `clip` clips the same
+          every descendant (the sticky navbar). `clip` clips the same
           horizontal overflow without creating one. */}
       <div className="min-h-screen overflow-x-clip" style={{ background: 'var(--ground)', color: 'var(--ink)' }}>
         <ScrollToTop />
-        <AnnouncementBanner />
         <Navbar />
 
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/about" element={<AboutPage />} />
           <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="/terms" element={<TermsPage />} />
           <Route path="*" element={<NotFoundPage />} />
