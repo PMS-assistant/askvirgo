@@ -21,9 +21,9 @@ export default {
         line: 'var(--line)',
       },
       fontFamily: {
-        display: ['Bricolage Grotesque', 'Plus Jakarta Sans', 'sans-serif'],
-        body: ['Plus Jakarta Sans', 'sans-serif'],
-        mono: ['JetBrains Mono', 'monospace'],
+        display: ['Poppins', 'system-ui', 'sans-serif'],
+        body: ['Poppins', 'system-ui', 'sans-serif'],
+        mono: ['Poppins', 'system-ui', 'sans-serif'],
       },
       borderRadius: {
         card: '24px',

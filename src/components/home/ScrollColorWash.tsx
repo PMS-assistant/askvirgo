@@ -16,11 +16,11 @@ import { prefersReducedMotion } from '../../lib/motion';
 /* Stops are [scrollProgress 0..1, r, g, b]. The first is the site's real
    --ground, so the top of the page is unchanged from the static design. */
 const STOPS: [number, [number, number, number]][] = [
-  [0.00, [244, 242, 251]], // --ground, porcelain
-  [0.30, [243, 240, 250]], // barely cooler through the problem section
-  [0.55, [246, 243, 248]], // warms very slightly at the capability tour
-  [0.80, [242, 241, 251]], // back toward violet before the dark band
-  [1.00, [240, 238, 250]],
+  [0.00, [251, 250, 248]], // --ground, warm off-white
+  [0.30, [251, 247, 243]], // a breath of peach through the problem section
+  [0.55, [250, 249, 246]], // neutral at the capability tour
+  [0.80, [246, 248, 251]], // toward sky before the dark band
+  [1.00, [244, 247, 251]],
 ];
 
 function mix(a: [number, number, number], b: [number, number, number], t: number) {

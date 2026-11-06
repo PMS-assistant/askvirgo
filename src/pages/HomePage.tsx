@@ -1,8 +1,9 @@
 import Hero from '../components/home/Hero';
-import BeforeAfter from '../components/home/BeforeAfter';
-import CapabilityScroller from '../components/home/CapabilityScroller';
-import VirgoProblem from '../components/virgo/VirgoProblem';
-import VirgoHowItWorks from '../components/virgo/VirgoHowItWorks';
+import VirgoIntro from '../components/home/VirgoIntro';
+import ProductTour from '../components/home/ProductTour';
+import LogoRunner from '../components/home/LogoRunner';
+import HowVirgoWorks from '../components/home/HowVirgoWorks';
+import Faq from '../components/home/Faq';
 import VirgoPilotCTA from '../components/virgo/VirgoPilotCTA';
 import ScrollColorWash from '../components/home/ScrollColorWash';
 
@@ -16,24 +17,24 @@ export default function HomePage() {
 
       <Hero />
 
-      {/* Say what's wrong before selling the fix — everything below is the
-          answer to this section. */}
-      <VirgoProblem />
+      {/* What Virgo is (the constellation), then its five capabilities.
+          Carries the #virgo anchor the navbar's "Product" link uses. */}
+      <VirgoIntro />
 
-      {/* The transformation, shown before it's explained — a working day
-          collapsing from five apps to one question. */}
-      <BeforeAfter />
+      {/* Inside Virgo: an automatic tour of the real product's screens. */}
+      <ProductTour />
 
-      {/* What you can ask, capability by capability — housekeeping, guest
-          messaging and the rest live here as example questions, not separate
-          dashboards. The single surviving product visual besides the hero's
-          own ask-demo, so it also carries the #virgo nav anchor. */}
-      <div id="virgo">
-        <CapabilityScroller />
-      </div>
+      {/* The PMS logos, scrolling continuously. No heading. */}
+      <LogoRunner />
 
-      {/* How to start, then the ask. Who built it lives on /company. */}
-      <VirgoHowItWorks />
+
+      {/* How Virgo works: five points, each with a small product scene. */}
+      <HowVirgoWorks />
+
+      {/* Questions a general manager or owner asks before a demo. */}
+      <Faq />
+
+      {/* The ask. */}
       <div id="pilot">
         <VirgoPilotCTA />
       </div>

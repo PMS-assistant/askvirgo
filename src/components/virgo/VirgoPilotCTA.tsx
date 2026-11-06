@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { supabase, supabaseConfigured } from '../../lib/supabase';
 import { useStaggerReveal, useReveal } from '../../lib/motion';
-import FluidBackdrop from '../home/FluidBackdrop';
 
 function isValidEmail(email: string): boolean {
   const re = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -68,51 +67,22 @@ export default function VirgoPilotCTA() {
   };
 
   return (
-    /* The site's one dark band. The fluid sim lives here rather than behind
-       the hero: it's interactive, so it rewards a visitor who has already
-       scrolled the whole page, and a single contained band keeps the light
-       "porcelain" identity intact everywhere else. */
-    <FluidBackdrop className="fluid-cta">
-      <section
-        style={{
-          position: 'relative',
-          padding: 'clamp(70px, 9vw, 120px) 0',
-        }}
-      >
-      <div className="relative max-w-[1180px] mx-auto px-6 lg:px-10">
-        <div ref={headerRef} style={{ textAlign: 'center', marginBottom: '44px' }}>
-          <p
-            className="font-mono"
-            style={{ opacity: 0, fontSize: '11px', letterSpacing: '2px', textTransform: 'uppercase', color: 'var(--pop)', marginBottom: '16px' }}
-          >
-            Get in touch
-          </p>
-          <h2
-            className="font-display"
-            style={{ opacity: 0, fontWeight: 800, fontSize: 'clamp(28px, 4.2vw, 50px)', color: '#fff', lineHeight: 1.05, marginBottom: '16px' }}
-          >
-            Let's talk.
-          </h2>
-          <p
-            className="font-body"
-            style={{ opacity: 0, fontSize: 'clamp(15px, 1.6vw, 17px)', color: 'rgba(255,255,255,0.74)', maxWidth: '460px', margin: '0 auto', lineHeight: 1.65 }}
-          >
-            Send a note and we'll come back within one working day — no sales pipeline,
+    /* The ask, on the page colour like every other section: what to expect
+       on the left, the form on the right (stacked on phones). */
+    <section className="ct">
+      <div className="ct-inner">
+        <div ref={headerRef} className="ct-head">
+          <p className="ct-eyebrow" style={{ opacity: 0 }}>Get in touch</p>
+          <h2 style={{ opacity: 0 }}>Let's talk.</h2>
+          <p className="ct-lead" style={{ opacity: 0 }}>
+            Send a note and we'll come back to you. No sales pipeline,
             no follow-up sequence.
           </p>
         </div>
-
         <div
           ref={formCardRef}
-          style={{
-            opacity: 0,
-            maxWidth: '520px', margin: '0 auto',
-            background: 'var(--surface)',
-            border: '1px solid var(--line)',
-            borderRadius: 'var(--radius-card)',
-            padding: 'clamp(28px, 4vw, 44px)',
-            boxShadow: '0 26px 60px rgba(20,18,26,0.10)',
-          }}
+          className="ct-card"
+          style={{ opacity: 0 }}
         >
           {status === 'success' ? (
             <div style={{ textAlign: 'center', padding: '22px 0' }}>
@@ -131,7 +101,7 @@ export default function VirgoPilotCTA() {
                 Request received.
               </h3>
               <p className="font-body" style={{ fontSize: '14px', color: 'var(--muted)' }}>
-                We'll be in touch within 24 hours.
+                We'll be in touch soon.
               </p>
             </div>
           ) : (
@@ -213,8 +183,8 @@ export default function VirgoPilotCTA() {
               {status === 'error' && (
                 <p style={{ fontSize: '12.5px', color: '#DC2626', textAlign: 'center', lineHeight: 1.5 }}>
                   We couldn't send that just now. Please email us at{' '}
-                  <a href="mailto:info@armtechnologies.ltd" style={{ color: '#DC2626', fontWeight: 600 }}>
-                    info@armtechnologies.ltd
+                  <a href="mailto:hello@askvirgo.co.uk" style={{ color: '#DC2626', fontWeight: 600 }}>
+                    hello@askvirgo.co.uk
                   </a>{' '}
                   instead — we'll pick it up either way.
                 </p>
@@ -224,34 +194,15 @@ export default function VirgoPilotCTA() {
 
           <div style={{ textAlign: 'center', marginTop: '20px' }}>
             <a
-              href="mailto:info@armtechnologies.ltd"
+              href="mailto:hello@askvirgo.co.uk"
               className="font-body"
               style={{ fontSize: '13px', color: 'var(--primary)', textDecoration: 'none' }}
             >
-              info@armtechnologies.ltd
-            </a>
-          </div>
-
-          {/* Same channel now also reachable from the navbar ("Investor
-              Enquiry"), so this is a quiet echo for anyone who scrolled the
-              whole way down rather than the only way to find it. "Press"
-              dropped — no press interest to route yet, and naming a channel
-              nobody uses reads worse than not having it. */}
-          <div style={{ textAlign: 'center', marginTop: '10px' }}>
-            <span className="font-body" style={{ fontSize: '12.5px', color: 'var(--faint)' }}>
-              Investor enquiry?{' '}
-            </span>
-            <a
-              href="mailto:info@armtechnologies.ltd?subject=Investor%20Enquiry"
-              className="font-body"
-              style={{ fontSize: '12.5px', color: 'var(--muted)', textDecoration: 'underline' }}
-            >
-              Email us directly
+              hello@askvirgo.co.uk
             </a>
           </div>
         </div>
       </div>
-      </section>
-    </FluidBackdrop>
+    </section>
   );
 }

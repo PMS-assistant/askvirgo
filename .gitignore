@@ -24,3 +24,9 @@ dist-ssr
 
 # Claude Code local settings (personal permissions, absolute paths)
 .claude/settings.local.json
+
+# Owner's business requirements documents (private, read locally only)
+virgo*.pdf
+
+# Local design mockups and screenshots (kept on disk, not in the repo)
+docs/mockups/

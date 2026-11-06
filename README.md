@@ -1,26 +1,30 @@
-# A.R.M Technologies website
+# Virgo website
 
-The marketing site for A.R.M Technologies, live at **armtechnologies.ltd**.
+The marketing site for **Virgo**, the AI hotel intelligence platform, live at
+**askvirgo.co.uk**. Virgo connects a hotel's PMS, accounting and guest messaging
+and answers questions about the hotel in plain English.
 
-It markets three things:
-
-| | What it is | Status |
-|---|---|---|
-| **Virgo** | AI hotel intelligence platform. Connects a hotel's PMS, accounting and guest messaging, and answers questions in plain English. | In development, onboarding first pilot hotels |
-| **The Gig Search** | Hospitality staffing marketplace | Live at [thegigsearch.com](https://www.thegigsearch.com) |
-| **Consulting** | Advisory for other founders | Ongoing |
-
-This repo is the **website only**. It is not the Virgo product itself.
+This repo is the **website only**. It is not the Virgo product.
 
 ## Stack
 
 React 18 · TypeScript · Vite · Tailwind CSS · React Router · anime.js v4 · Supabase
 
+## Pages
+
+| Route | Page |
+|---|---|
+| `/` | Home: one continuous scroll (hero, what Virgo is, inside Virgo, how Virgo works, contact form) |
+| `/privacy` | Privacy policy. **Draft** placeholder text, with a visible Draft banner |
+| `/terms` | Terms of use. **Draft** placeholder text, with a visible Draft banner |
+| `*` | 404 page |
+
 ## Running it
 
 ```bash
 npm install
-npm run dev        # http://localhost:5173
+cp .env.example .env.local   # then fill in the two values
+npm run dev                  # http://localhost:5173
 ```
 
 | Script | Does |
@@ -31,35 +35,55 @@ npm run dev        # http://localhost:5173
 | `npm run typecheck` | `tsc --noEmit` |
 | `npm run lint` | ESLint |
 
-### Environment
+### Environment variables
 
-Create `.env.local` in the project root:
+Names only; see `.env.example`.
 
-```
-VITE_SUPABASE_URL=your_supabase_url
-VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-```
+| Variable | Used by |
+|---|---|
+| `VITE_SUPABASE_URL` | Site (contact form) |
+| `VITE_SUPABASE_ANON_KEY` | Site (contact form) |
 
-Without them the app still runs, but the pilot signup form cannot save anything —
-it fails fast and tells the visitor to email instead. `src/lib/supabase.ts` logs a
-console error naming the missing variables, so a misconfigured deploy is visible
-rather than silently dropping every signup.
+Without them the site still runs, but the contact form cannot save anything. It
+fails fast and tells the visitor to email instead, and `src/lib/supabase.ts` logs
+a console error naming the missing variables.
 
-Set the same two variables in the hosting provider's environment settings.
+The `notify-whatsapp` edge function has its own secrets, set in Supabase and never
+in the site build. See [Enquiry notifications](#enquiry-notifications).
+
+## Deploying to AWS Amplify
+
+`amplify.yml` in the repo root tells Amplify how to build: `npm ci`, then
+`npm run build`, publishing `dist/`.
+
+1. In Amplify, connect this repo and pick the branch to deploy.
+2. Under **Environment variables**, add `VITE_SUPABASE_URL` and
+   `VITE_SUPABASE_ANON_KEY`. Vite bakes them in at build time, so redeploy after
+   changing them.
+3. Add the custom domain `askvirgo.co.uk` under **Domain management**.
+
+### SPA rewrite (required)
+
+This is a single-page app: `/privacy`, `/terms` and any other path only exist in
+the browser's router. Without a rewrite, loading them directly (or refreshing)
+returns a 404 from the host. In Amplify go to **Rewrites and redirects** and add:
+
+| Source address | Target address | Type |
+|---|---|---|
+| `</^[^.]+$\|\.(?!(css\|gif\|ico\|jpg\|js\|png\|txt\|svg\|woff\|woff2\|ttf\|map\|json\|webp\|xml)$)([^.]+$)/>` | `/index.html` | `200 (Rewrite)` |
+
+It must be type **200 (Rewrite)**, not a 301/302 redirect. Static files
+(`robots.txt`, `sitemap.xml`, assets) are excluded so they are still served as-is.
 
 ## Enquiry notifications
 
-A signup that only lands in a database table is a signup nobody reads. A Supabase
-database webhook fires the `notify-whatsapp` edge function on every insert into
-`vzir_pilot_signups`, which sends the enquiry to A.R.M's WhatsApp number.
+The contact form inserts a row into the Supabase table `vzir_pilot_signups`. A
+Supabase database webhook then fires the `notify-whatsapp` edge function, which
+sends the enquiry to a WhatsApp number. The form itself is not involved: if the
+send fails, the row is already saved.
 
-The form itself is not involved: it inserts a row and finishes. Nothing about
-notification can cost you a signup — if the WhatsApp send fails, the row is
-already committed and the enquiry is still in the table.
-
-The Meta access token can send messages as A.R.M, so it never goes near the React
-bundle — anything shipped to the browser is readable by every visitor. It lives in
-edge function secrets, which is the whole reason this runs server-side.
+The Meta access token never goes near the React bundle. Anything shipped to the
+browser is readable by every visitor, so it lives in edge function secrets.
 
 **1. Deploy the function**
 
@@ -73,12 +97,10 @@ supabase functions deploy notify-whatsapp
 |---|---|
 | `WHATSAPP_TOKEN` | Meta access token |
 | `PHONE_NUMBER_ID` | Meta phone number ID (the sending number) |
-| `WHATSAPP_NOTIFY_NUMBER` | Where alerts go — A.R.M's number, not the visitor's |
+| `WHATSAPP_NOTIFY_NUMBER` | Where alerts go, not the visitor's number |
 | `ENQUIRY_WEBHOOK_SECRET` | Any long random string you invent |
 | `WHATSAPP_TEMPLATE_NAME` | Optional, but see the 24-hour note below |
 | `WHATSAPP_TEMPLATE_LANG` | Optional, defaults to `en` |
-
-The first three are the same values the WhatsApp bot already uses.
 
 **3. Create the webhook** (Supabase dashboard → Database → Webhooks)
 
@@ -89,20 +111,15 @@ pointing at `notify-whatsapp`. Add one HTTP header:
 x-webhook-secret: <the ENQUIRY_WEBHOOK_SECRET value>
 ```
 
-This is configured in the dashboard rather than as a migration on purpose — a
-migration is tracked in git, and both the secret and the project URL would end up
-committed.
-
-Without that header the function returns 401. Its URL is otherwise a public
-"send a WhatsApp as A.R.M" button.
+This is configured in the dashboard rather than as a migration on purpose: a
+migration is tracked in git, and the secret and project URL would be committed.
+Without the header the function returns 401.
 
 **The 24-hour window.** Meta only delivers a plain text message inside a 24-hour
-window that opens when the receiving number last messaged your business number.
-For an alert arriving at 3pm on a quiet Tuesday that window is usually shut, and
-the send fails with error `131047`. Plain text is therefore fine for testing but
-not for running on. Get a simple one-parameter template approved in Meta Business
-Manager and set `WHATSAPP_TEMPLATE_NAME` — templates have no window and always
-deliver.
+window that opens when the receiving number last messaged the sending number.
+Outside it the send fails with error `131047`. Plain text is fine for testing; for
+real use, get a one-parameter template approved in Meta Business Manager and set
+`WHATSAPP_TEMPLATE_NAME`.
 
 ## Structure
 
@@ -111,58 +128,49 @@ src/
   index.css              Design tokens (:root custom properties) and .pill button classes
   App.tsx                Routes
   lib/
-    motion.ts            anime.js primitives: useReveal, useStaggerReveal,
-                         useScrollScrub, useCursorGlow, prefersReducedMotion
+    motion.ts            anime.js primitives
+    fluid/renderer.ts    WebGL fluid backdrop
     supabase.ts          Supabase client
   components/
-    home/                Homepage sections, in page order
-    virgo/               Virgo-specific sections (problem, how it works, pilot form)
+    home/                Homepage sections and visual effects
+    virgo/               Contact form
+    legal/               Shared layout for the draft legal pages
     layout/              Navbar, Footer, ScrollToTop
-  pages/                 HomePage, CompanyPage, GigSearchPage, ConsultingPage
+  pages/                 HomePage, PrivacyPage, TermsPage, NotFoundPage
+public/                  robots.txt, sitemap.xml
 supabase/
-  migrations/            SQL for the pilot signup table
-  functions/             Edge functions (notify-whatsapp: enquiry → WhatsApp)
-docs/                    Copy audits and content planning
+  migrations/            SQL for the signup table
+  functions/             notify-whatsapp edge function
+docs/                    Content plan
 ```
-
-Routes: `/` · `/company` · `/thegigsearch` · `/consulting`. `/vzir` redirects to
-`/` for old bookmarks.
 
 ## Design system
 
 A light theme, "Electric Violet on Porcelain": porcelain ground, large Bricolage
-Grotesque headlines, pill buttons, a bento feature grid and one dark contrast band.
+Grotesque headlines, pill buttons, one dark contrast band.
 
 **Never hardcode a colour in a component.** Every colour is a CSS custom property
-in `src/index.css` (`--ground`, `--ink`, `--primary`, `--pop`, `--amber`, `--mint`,
-`--danger`…), so re-theming is a change to that one block.
+in `src/index.css`, so re-theming is a change to that one block.
 
-Animation runs through `src/lib/motion.ts`. Every primitive respects
-`prefers-reduced-motion`: reveals collapse to instant so content still lands, and
-purely decorative motion is skipped.
+Animation runs through `src/lib/motion.ts`, and every primitive respects
+`prefers-reduced-motion`.
 
-## The WhatsApp bot
+## Brand and copy rules
 
-A.R.M's WhatsApp bot used to live in this repo under `backend/`. Nothing in the
-site ever called it, so it now has its own project at `../arm-whatsapp-bot`. This
-repo is the website and nothing else.
+- The site is about the **product, Virgo**. No parent-company branding anywhere.
+  The single exception is the legal line in the footer.
+- **Virgo never writes to a connected system.** No rate changes, no reservation
+  edits, no bookings. The only write surface is guardrailed WhatsApp guest replies.
+  Copy must say Virgo *recommends* or *surfaces*, never "adjusts" or "applies".
+- No invented numbers: no "saves X hours", no customer or revenue claims. Figures
+  inside product mockups are sample data and are labelled as such.
+- Do not mention hosting, tooling or AI vendors on the site.
 
-## A note on the name
+## A note on the name `vzir`
 
-The flagship product was renamed from **Vzir** to **Virgo**. A few "vzir" names
-survive on purpose, because renaming them would break live things:
+The product was previously called Vzir. The Supabase table `vzir_pilot_signups`
+and its migration keep that name on purpose, because the table holds live rows and
+renaming it would break the form. Visitors never see it.
 
-- the Supabase table `vzir_pilot_signups`, which holds real signups
-- its migration file in `supabase/migrations/`
-- `/vzir`, which redirects to `/`
-- `docs/vzir-website-content-plan.md`, a dated historical audit
-
-Everything a visitor can see says Virgo.
-
-## Writing copy for this site
-
-Read `CLAUDE.md` before editing anything about Virgo. The short version:
-**Virgo never writes to a connected system.** No rate changes, no reservation
-edits, no bookings. The only write surface in the product is guardrailed WhatsApp
-guest replies. Any copy implying Virgo "adjusts", "applies" or "updates" something
-is wrong and must say it *recommends* or *surfaces* instead.
+Before launch, replace the draft text on `/privacy` and `/terms` and remove the
+Draft banner (`src/components/legal/LegalLayout.tsx`).
