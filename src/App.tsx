@@ -5,6 +5,7 @@ import { useMountAnimation } from './lib/motion';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import ScrollToTop from './components/layout/ScrollToTop';
+import ScrollFlow from './components/layout/ScrollFlow';
 import HomePage from './pages/HomePage';
 import AboutPage from './pages/AboutPage';
 import PrivacyPage from './pages/PrivacyPage';
@@ -35,6 +36,7 @@ function App() {
           horizontal overflow without creating one. */}
       <div className="min-h-screen overflow-x-clip" style={{ background: 'var(--ground)', color: 'var(--ink)' }}>
         <ScrollToTop />
+        <ScrollFlow />
         <Navbar />
 
         <Routes>
