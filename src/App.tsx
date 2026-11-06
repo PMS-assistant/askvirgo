@@ -5,7 +5,7 @@ import { useMountAnimation } from './lib/motion';
 import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import ScrollToTop from './components/layout/ScrollToTop';
-import ScrollFlow from './components/layout/ScrollFlow';
+import ScrollReveal from './components/layout/ScrollReveal';
 import HomePage from './pages/HomePage';
 import AboutPage from './pages/AboutPage';
 import PrivacyPage from './pages/PrivacyPage';
@@ -34,9 +34,9 @@ function App() {
           making this a scroll container and breaking `position: sticky` for
           every descendant (the sticky navbar). `clip` clips the same
           horizontal overflow without creating one. */}
-      <div className="min-h-screen overflow-x-clip" style={{ background: 'var(--ground)', color: 'var(--ink)' }}>
+      <div className="min-h-screen overflow-x-clip" style={{ color: 'var(--ink)' }}>
         <ScrollToTop />
-        <ScrollFlow />
+        <ScrollReveal />
         <Navbar />
 
         <Routes>
