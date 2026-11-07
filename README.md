@@ -179,31 +179,19 @@ Draft banner (`src/components/legal/LegalLayout.tsx`).
 
 Two forms send enquiries: **Book a demo** on the homepage and the **Investors**
 page (`/investors`). Both save a row in `vzir_pilot_signups` (with
-`enquiry_type` = `demo` or `investor`). A database webhook then calls the
-`notify-email` function, which emails the owner and sends the visitor a short
-thank-you through Amazon SES. A failed email never loses an enquiry: the row
-is saved first.
+`enquiry_type` = `demo` or `investor`). A database trigger then calls the
+`notify-email` function with the row's id; the function re-reads the row,
+emails the owner (reply-to the visitor), sends the visitor a short thank-you
+through Amazon SES, and stamps `notified_at` so each enquiry is emailed once.
+A failed email never loses an enquiry: the row is saved first.
 
-One-time setup:
+**Setup (one time):** run `bash scripts/setup-enquiry-emails.sh` in your own
+Terminal from the project folder. It applies the database changes, creates an
+SES send-only IAM user and key, stores the secrets in Supabase and deploys the
+function. Enquiries go to `hello@askvirgo.co.uk` unless you run it as
+`NOTIFY_TO=you@example.com bash scripts/setup-enquiry-emails.sh`.
 
-1. **Database change.** Apply `supabase/migrations/20261107120000_enquiry_types.sql`
-   (`npx supabase db push`, or paste it into the Supabase SQL editor). Until it
-   is applied, the forms still work and fold the type into the message.
-2. **SES domain.** `askvirgo.co.uk` is created as an SES identity in eu-west-2.
-   Add its three DKIM CNAME records and the `mail.askvirgo.co.uk` MX/TXT records
-   to Route 53 (shown in the SES console under the identity). Zoho mail records
-   stay as they are.
-3. **Sending key.** Create an IAM user allowed only `ses:SendEmail` and
-   `ses:SendRawEmail`, and an access key for it.
-4. **Function secrets and deploy:**
-   ```bash
-   npx supabase secrets set AWS_ACCESS_KEY_ID=... AWS_SECRET_ACCESS_KEY=... AWS_REGION=eu-west-2 \
-     NOTIFY_TO=hello@askvirgo.co.uk ENQUIRY_WEBHOOK_SECRET=<random string>
-   npx supabase functions deploy notify-email --no-verify-jwt
-   ```
-5. **Webhook.** Supabase dashboard → Database → Webhooks → new: table
-   `vzir_pilot_signups`, event INSERT, HTTP POST to the `notify-email` function
-   URL, header `x-webhook-secret: <same random string>`.
-6. **Leave the SES sandbox.** Until AWS grants production access, SES only
-   delivers to verified addresses: the owner email works once `NOTIFY_TO` is
-   verified, and the visitor thank-you starts working after approval.
+Before it can send, `askvirgo.co.uk` must show **Verified** in SES (its three
+DKIM CNAMEs are in Route 53). New SES accounts are in a sandbox: the owner
+email works straight away, and the visitor's thank-you starts once AWS grants
+production access (SES console → Account dashboard → Request production access).
