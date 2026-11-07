@@ -1,0 +1,11 @@
+{
+  "name": "Virgo",
+  "short_name": "Virgo",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ],
+  "theme_color": "#FBFAF8",
+  "background_color": "#FBFAF8",
+  "display": "browser"
+}
