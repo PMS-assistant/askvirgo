@@ -2,14 +2,15 @@
   Emails every website enquiry to the owner, and sends the visitor a short
   thank-you, through Amazon SES (askvirgo.co.uk is a verified SES domain).
 
-  Wiring: a Supabase database webhook calls this on INSERT into
-  vzir_pilot_signups (header x-webhook-secret). The form only inserts a row,
+  Wiring: a database trigger (migration 20261107130000) calls this with the
+  new row's id after every INSERT into vzir_pilot_signups. The function
+  re-reads that row with the service role and stamps notified_at, so it only
+  emails real enquiries, and each one only once. The form only inserts a row,
   so a failed email can never lose an enquiry: the row is already saved.
 
   Secrets (supabase secrets set ...):
     AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY   an IAM user allowed only ses:SendEmail
     AWS_REGION                                 eu-west-2
-    ENQUIRY_WEBHOOK_SECRET                     shared with the webhook
     NOTIFY_TO                                  where enquiries go, e.g. hello@askvirgo.co.uk
     NOTIFY_FROM   (optional)                   default "Virgo enquiries <enquiries@askvirgo.co.uk>"
     REPLY_FROM    (optional)                   default "Virgo <hello@askvirgo.co.uk>"
@@ -20,7 +21,8 @@
 import { SESv2Client, SendEmailCommand } from 'npm:@aws-sdk/client-sesv2@3';
 
 const env = (k: string) => Deno.env.get(k) ?? '';
-const SECRET = env('ENQUIRY_WEBHOOK_SECRET');
+const DB_URL = env('SUPABASE_URL');
+const SERVICE_KEY = env('SUPABASE_SERVICE_ROLE_KEY'); // provided automatically to edge functions
 const NOTIFY_TO = env('NOTIFY_TO');
 const NOTIFY_FROM = env('NOTIFY_FROM') || 'Virgo enquiries <enquiries@askvirgo.co.uk>';
 const REPLY_FROM = env('REPLY_FROM') || 'Virgo <hello@askvirgo.co.uk>';
@@ -103,13 +105,29 @@ async function send(from: string, to: string, replyTo: string | undefined, m: { 
   }));
 }
 
+const db = (path: string, init: RequestInit = {}) =>
+  fetch(`${DB_URL}/rest/v1/${path}`, {
+    ...init,
+    headers: { apikey: SERVICE_KEY, Authorization: `Bearer ${SERVICE_KEY}`, 'Content-Type': 'application/json', ...(init.headers ?? {}) },
+  });
+
 Deno.serve(async req => {
   if (req.method !== 'POST') return new Response('Method not allowed', { status: 405 });
-  if (!SECRET || req.headers.get('x-webhook-secret') !== SECRET) return new Response('Unauthorized', { status: 401 });
-  if (!NOTIFY_TO) return new Response('NOTIFY_TO not set', { status: 500 });
+  if (!NOTIFY_TO || !DB_URL || !SERVICE_KEY) return new Response('Not configured', { status: 500 });
 
-  let row: Row;
-  try { const body = await req.json(); row = body.record ?? body; } catch { return new Response('Bad request', { status: 400 }); }
+  let id = '';
+  try { const body = await req.json(); id = String(body.id ?? body.record?.id ?? ''); } catch { /* fall through */ }
+  if (!/^[0-9a-f-]{36}$/i.test(id)) return new Response('Bad request', { status: 400 });
+
+  // Claim the row: only a saved enquiry that hasn't been emailed yet.
+  const claim = await db(`vzir_pilot_signups?id=eq.${id}&notified_at=is.null`, {
+    method: 'PATCH',
+    headers: { Prefer: 'return=representation' },
+    body: JSON.stringify({ notified_at: new Date().toISOString() }),
+  });
+  const rows = claim.ok ? (await claim.json()) as Row[] : [];
+  if (!rows.length) return new Response(JSON.stringify({ skipped: true }), { headers: { 'Content-Type': 'application/json' } });
+  const row = rows[0];
 
   const result = { owner: false, visitor: false };
   try { await send(NOTIFY_FROM, NOTIFY_TO, row.email, ownerEmail(row)); result.owner = true; }
@@ -119,5 +137,7 @@ Deno.serve(async req => {
     try { await send(REPLY_FROM, row.email, undefined, visitorEmail(row)); result.visitor = true; }
     catch (e) { console.error('[notify-email] visitor email failed:', String(e)); }
   }
+  // If the owner email failed, release the claim so a retry can send it.
+  if (!result.owner) await db(`vzir_pilot_signups?id=eq.${id}`, { method: 'PATCH', body: JSON.stringify({ notified_at: null }) });
   return new Response(JSON.stringify(result), { status: result.owner ? 200 : 502, headers: { 'Content-Type': 'application/json' } });
 });
