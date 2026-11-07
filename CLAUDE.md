@@ -210,7 +210,7 @@ quotes until real ones exist.
 Tailwind note: classes in `@layer components` are purged unless written out in full in the source; never build class names from pieces (e.g. `vi-${x}`).
 
 Still open: pricing (none shown), real security facts (no badges), a real booking link
-for "Book a demo" (scrolls to the form), favicon and a real `og:image`, and whether the systems list (now off the homepage) should
+for "Book a demo" (scrolls to the form), and whether the systems list (now off the homepage) should
 come back somewhere, with live / in-progress / roadmap labels.
 
 ## Site expansion (owner, 2026-11-06)
@@ -220,3 +220,7 @@ The product is still in development, but the website must look full-fledged beca
 ## Seamless page (owner's choice, 2026-11-06)
 
 The site reads as one continuous surface, not a stack of boxes: homepage sections and the footer are transparent over the drifting `--wash` colour (`ScrollColorWash`, stops tuned to the current sections), there are no lines between sections, the hero photo fades into the page at its bottom edge, and the main blocks fade up softly as they arrive (`src/components/layout/ScrollReveal.tsx`, CSS block "Seamless page" in `index.css`). Normal scrolling is untouched. Chosen over two other trial versions, Glide (inertia scrolling) and Depth (parallax), which were removed.
+
+## Icons and link preview (2026-11-07)
+
+Favicon is the Virgo orb (`public/favicon.svg`, plus `favicon-32.png`, `apple-touch-icon.png`, `icon-192/512.png` and `site.webmanifest`). The link-preview image is `public/og-image.jpg` (1200×630: Virgo mark, the hero line and the lobby photo), set in `index.html` for Open Graph and Twitter. If the hero line changes, regenerate the image.
