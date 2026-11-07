@@ -10,7 +10,8 @@ const COLUMNS = [
       { name: 'How it works', path: '/#how-it-works' },
       { name: 'FAQ', path: '/#faq' },
       { name: 'About', path: '/about' },
-      { name: 'Get in touch', path: '/#pilot' },
+      { name: 'Investors', path: '/investors' },
+      { name: 'Book a demo', path: '/#pilot' },
     ],
   },
   {
