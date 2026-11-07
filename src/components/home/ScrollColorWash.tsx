@@ -16,11 +16,11 @@ import { prefersReducedMotion } from '../../lib/motion';
 /* Stops are [scrollProgress 0..1, r, g, b]. The first is the site's real
    --ground, so the top of the page is unchanged from the static design. */
 const STOPS: [number, [number, number, number]][] = [
-  [0.00, [251, 250, 248]], // --ground, warm off-white
-  [0.30, [251, 247, 243]], // a breath of peach through the problem section
-  [0.55, [250, 249, 246]], // neutral at the capability tour
-  [0.80, [246, 248, 251]], // toward sky before the dark band
-  [1.00, [244, 247, 251]],
+  [0.00, [251, 250, 248]], // --ground, under the hero
+  [0.30, [252, 246, 241]], // a breath of peach through Inside Virgo
+  [0.55, [249, 249, 247]], // neutral at the logo runner
+  [0.72, [245, 248, 252]], // toward sky at How Virgo works
+  [1.00, [252, 245, 239]], // warm again at the contact form
 ];
 
 function mix(a: [number, number, number], b: [number, number, number], t: number) {

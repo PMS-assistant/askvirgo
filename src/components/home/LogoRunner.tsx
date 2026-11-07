@@ -1,6 +1,6 @@
 /* A band of PMS logos that scrolls continuously, placed after Inside Virgo.
    No heading or wording, at the owner's request (2026-11-06). The list is
-   drawn twice so the loop is seamless; it pauses on hover and sits still
+   drawn twice so the loop is seamless; it never pauses (owner, 2026-11-07) and sits still
    under reduced motion.
 
    Logos are the brands' own files from their websites (public/images/pms/),

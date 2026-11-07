@@ -328,7 +328,7 @@ select option {
     background:
       linear-gradient(180deg, var(--veil-mid) 0%, var(--veil-clear) 18%),
       linear-gradient(0deg, var(--veil-mid) 0%, var(--veil-clear) 30%),
-      linear-gradient(90deg, var(--veil-strong) 0%, var(--veil-mid) 44%, var(--veil-soft) 66%, var(--veil-clear) 82%);
+      linear-gradient(90deg, var(--veil-strong) 0%, var(--veil-mid) 30%, var(--veil-soft) 58%, var(--veil-clear) 76%);
   }
   .hv-inner {
     position: relative; z-index: 2; align-self: end; width: 100%; max-width: 1440px; margin: 0 auto;
@@ -841,7 +841,6 @@ select option {
   .lr { background: var(--ground); border-top: 1px solid var(--line-soft); border-bottom: 1px solid var(--line-soft); overflow: hidden; padding: clamp(36px, 5vw, 56px) 0;
     -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
   .lr-track { display: flex; width: max-content; animation: lr-run 36s linear infinite; }
-  .lr:hover .lr-track { animation-play-state: paused; }
   .lr-list { display: flex; align-items: center; gap: clamp(56px, 7vw, 112px); padding-right: clamp(56px, 7vw, 112px); margin: 0; list-style: none; }
   .lr-list li { display: flex; align-items: center; height: 64px; flex-shrink: 0; }
   .lr-logo { display: block; width: auto; max-width: none; }
@@ -908,4 +907,22 @@ select option {
   .ab-cta p { margin: 0 0 8px; color: var(--ink-soft); }
   .ab-cta a:not(.a1-btn) { color: var(--primary-deep); text-decoration: none; }
   @media (max-width: 860px) { .ab-by, .ab-cards { grid-template-columns: 1fr; } }
+}
+
+
+/* ================= Seamless page (owner's choice, 2026-11-06) =================
+   One continuous surface: sections are transparent over the drifting --wash
+   colour (ScrollColorWash), with no lines between them, and blocks fade up as
+   they arrive (ScrollReveal.tsx). Plain CSS outside @layer so classes added
+   from code survive Tailwind's purge. */
+.vi, .pt, .lr, .bn, .fq, .ct { background: transparent; border-top-color: transparent; border-bottom-color: transparent; }
+.ab-block { border-top-color: transparent; }
+.lr { -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); }
+/* the hero photo melts into the page instead of ending on a hard edge */
+.hv::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 22%; z-index: 1; pointer-events: none; background: linear-gradient(180deg, rgba(251, 250, 248, 0) 0%, var(--wash) 100%); }
+/* soft reveal */
+.fl-r { opacity: 0; transform: translateY(26px); transition: opacity 1s cubic-bezier(.2,.7,.2,1), transform 1.1s cubic-bezier(.2,.7,.2,1); }
+.fl-r.fl-in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) {
+  .fl-r { opacity: 1; transform: none; transition: none; }
 }

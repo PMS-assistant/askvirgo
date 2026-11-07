@@ -22,13 +22,13 @@ const COLUMNS = [
   },
 ];
 
-/* A plain band on the page colour, separated by a hairline. */
+/* A plain band on the page's drifting colour, with no line above it, so the
+   page ends as one continuous surface. */
 export default function Footer() {
   return (
     <footer
       style={{
-        background: 'var(--ground)',
-        borderTop: '1px solid var(--line-soft)',
+        background: 'transparent',
         padding: 'clamp(48px, 6vw, 72px) clamp(18px, 3vw, 40px) clamp(28px, 3vw, 36px)',
       }}
     >
