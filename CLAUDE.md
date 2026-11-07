@@ -224,3 +224,10 @@ The site reads as one continuous surface, not a stack of boxes: homepage section
 ## Icons and link preview (2026-11-07)
 
 Favicon is the Virgo orb (`public/favicon.svg`, plus `favicon-32.png`, `apple-touch-icon.png`, `icon-192/512.png` and `site.webmanifest`). The link-preview image is `public/og-image.jpg` (1200×630: Virgo mark, the hero line and the lobby photo), set in `index.html` for Open Graph and Twitter. If the hero line changes, regenerate the image.
+
+## Enquiries (2026-11-07)
+
+- **Book a demo** (homepage `#pilot`, `VirgoPilotCTA`) is demos only: no enquiry-type choice. **Investors** is an outlined header button next to Book a demo, opening `/investors` (`src/pages/InvestorsPage.tsx`): "Invest in Virgo." and four questions (full name, organisation or fund, email, optional message). No funding stage, amounts or claims.
+- Both save through `src/lib/enquiries.ts` into `vzir_pilot_signups` with `enquiry_type` `demo`/`investor` (migration `20261107120000_enquiry_types.sql` also adds `organisation` and drops the unique email). If the migration isn't applied, the helper retries with the old columns.
+- `supabase/functions/notify-email` emails the owner (`NOTIFY_TO`, reply-to the visitor) and sends the visitor a thank-you from hello@askvirgo.co.uk via Amazon SES. Setup steps are in README "Enquiry emails". The old `notify-whatsapp` function is unused.
+- Amplify has `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` as app-level variables (added 2026-11-07), so the live forms save.

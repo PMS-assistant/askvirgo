@@ -8,6 +8,7 @@ import ScrollToTop from './components/layout/ScrollToTop';
 import ScrollReveal from './components/layout/ScrollReveal';
 import HomePage from './pages/HomePage';
 import AboutPage from './pages/AboutPage';
+import InvestorsPage from './pages/InvestorsPage';
 import PrivacyPage from './pages/PrivacyPage';
 import TermsPage from './pages/TermsPage';
 import NotFoundPage from './pages/NotFoundPage';
@@ -42,6 +43,7 @@ function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/about" element={<AboutPage />} />
+          <Route path="/investors" element={<InvestorsPage />} />
           <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="/terms" element={<TermsPage />} />
           <Route path="*" element={<NotFoundPage />} />

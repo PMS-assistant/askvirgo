@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 
-/* Header: the Virgo mark, four links and Book a demo. Product, Inside Virgo
+/* Header: the Virgo mark, four links, an outlined Investors button and Book a demo. Product, Inside Virgo
    and How it works scroll to those sections of the homepage; About is its own
    page. On phones the links open in a simple panel under the header. */
 
@@ -79,6 +79,9 @@ export default function Navbar() {
         </div>
 
         <div className="flex items-center gap-2">
+          <Link to="/investors" className="nv-ghost hidden md:inline-flex">
+            Investors
+          </Link>
           <Link to="/#pilot" className="a1-btn" style={{ fontSize: '13px', padding: '8px 16px' }}>
             Book a demo
           </Link>
@@ -106,6 +109,13 @@ export default function Navbar() {
               {link.name}
             </Link>
           ))}
+          <Link
+            to="/investors"
+            className="font-display"
+            style={{ fontSize: '22px', color: 'var(--ink)', textDecoration: 'none', padding: '12px 0', borderTop: '1px solid var(--line-soft)' }}
+          >
+            Investors
+          </Link>
         </div>
       )}
     </nav>

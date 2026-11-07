@@ -926,3 +926,30 @@ select option {
 @media (prefers-reduced-motion: reduce) {
   .fl-r { opacity: 1; transform: none; transition: none; }
 }
+
+/* ================= Header Investors button + Investors page ================= */
+@layer components {
+  .nv-ghost { align-items: center; font-size: 13px; font-weight: 500; color: var(--ink); text-decoration: none; border: 1.5px solid var(--ink); border-radius: 999px; padding: 6.5px 15px; transition: background-color .2s ease; }
+  .nv-ghost:hover { background: rgba(15, 27, 51, 0.05); }
+  .iv { background: transparent; }
+  .iv-inner { max-width: 1180px; margin: 0 auto; padding: clamp(48px, 8vw, 110px) clamp(18px, 3vw, 40px); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 480px); gap: clamp(28px, 5vw, 72px); align-items: start; }
+  .iv-eyebrow { font-size: 11.5px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-soft); }
+  .iv-head h1 { font-weight: 600; font-size: clamp(32px, 4.4vw, 56px); line-height: 1.08; letter-spacing: -0.025em; color: var(--ink); margin: 12px 0 18px; }
+  .iv-head p { font-size: 16.5px; line-height: 1.65; color: var(--ink-soft); max-width: 46ch; margin: 0; }
+  .iv-card { background: var(--surface); border: 1px solid var(--line); border-radius: 20px; padding: clamp(22px, 3vw, 32px); }
+  .iv-form { display: grid; gap: 14px; }
+  .iv-form label { display: grid; gap: 6px; }
+  .iv-form label > span { font-size: 13px; font-weight: 500; color: var(--ink-soft); }
+  .iv-form label i { font-style: normal; font-weight: 400; color: var(--faint); }
+  .iv-form input, .iv-form textarea { width: 100%; font: inherit; font-size: 15px; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 15px; outline: none; transition: border-color .2s; resize: vertical; }
+  .iv-form input:focus, .iv-form textarea:focus { border-color: var(--primary); }
+  .iv-btn { margin-top: 4px; font: inherit; font-weight: 500; font-size: 15px; color: #fff; background: var(--ink); border: 0; border-radius: 999px; padding: 14px; cursor: pointer; }
+  .iv-btn:disabled { opacity: .6; cursor: default; }
+  .iv-err { font-style: normal; font-size: 12.5px; color: var(--danger); margin: 0; }
+  .iv-err a { color: inherit; font-weight: 600; }
+  .iv-done { text-align: center; display: grid; gap: 10px; justify-items: center; padding: 26px 6px; }
+  .iv-tick { width: 54px; height: 54px; border-radius: 50%; display: grid; place-items: center; color: var(--primary); background: var(--primary-wash); border: 1px solid var(--primary-line); font-size: 22px; }
+  .iv-done h2 { font-weight: 600; font-size: 21px; color: var(--ink); margin: 0; }
+  .iv-done p { color: var(--muted); font-size: 14px; max-width: 34ch; margin: 0; }
+  @media (max-width: 860px) { .iv-inner { grid-template-columns: 1fr; } }
+}

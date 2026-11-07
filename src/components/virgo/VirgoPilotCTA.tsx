@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { supabase, supabaseConfigured } from '../../lib/supabase';
+import { submitEnquiry } from '../../lib/enquiries';
 import { useStaggerReveal, useReveal } from '../../lib/motion';
 
 function isValidEmail(email: string): boolean {
@@ -41,25 +41,16 @@ export default function VirgoPilotCTA() {
       return;
     }
 
-    // No credentials means the insert can only fail on a DNS lookup for the
-    // placeholder host — skip the round trip and the spinner that goes with it.
-    if (!supabaseConfigured) {
-      setStatus('error');
-      return;
-    }
-
     setStatus('loading');
-
-    // Table name predates the Virgo rename — left as-is to keep existing rows.
-    const { error } = await supabase.from('vzir_pilot_signups').insert({
+    const result = await submitEnquiry({
+      type: 'demo',
       name: formData.name,
-      email: formData.email.toLowerCase().trim(),
-      hotel_name: formData.hotel,
+      email: formData.email,
+      hotel: formData.hotel,
       message: formData.message,
     });
-
-    if (error) {
-      setStatus(error.code === '23505' ? 'duplicate' : 'error');
+    if (result !== 'ok') {
+      setStatus(result);
       return;
     }
 
@@ -72,11 +63,11 @@ export default function VirgoPilotCTA() {
     <section className="ct">
       <div className="ct-inner">
         <div ref={headerRef} className="ct-head">
-          <p className="ct-eyebrow" style={{ opacity: 0 }}>Get in touch</p>
+          <p className="ct-eyebrow" style={{ opacity: 0 }}>Book a demo</p>
           <h2 style={{ opacity: 0 }}>Let's talk.</h2>
           <p className="ct-lead" style={{ opacity: 0 }}>
-            Send a note and we'll come back to you. No sales pipeline,
-            no follow-up sequence.
+            See Virgo answer the questions your managers ask. Tell us about
+            your hotel and we'll be in touch to arrange a demo.
           </p>
         </div>
         <div
@@ -98,10 +89,10 @@ export default function VirgoPilotCTA() {
                 </svg>
               </div>
               <h3 className="font-display" style={{ fontWeight: 700, fontSize: '21px', color: 'var(--ink)', marginBottom: '8px' }}>
-                Request received.
+                {formData.name.trim() ? `Thanks, ${formData.name.trim().split(' ')[0]}.` : 'Thanks.'}
               </h3>
-              <p className="font-body" style={{ fontSize: '14px', color: 'var(--muted)' }}>
-                We'll be in touch soon.
+              <p className="font-body" style={{ fontSize: '14px', color: 'var(--muted)', maxWidth: '34ch', margin: '0 auto' }}>
+                Your demo request is in. We've sent a confirmation to {formData.email.trim()} and we'll be in touch.
               </p>
             </div>
           ) : (
@@ -140,7 +131,7 @@ export default function VirgoPilotCTA() {
                 )}
                 {status === 'duplicate' && (
                   <p style={{ fontSize: '12.5px', color: '#B8760D', marginTop: '6px', marginLeft: '4px' }}>
-                    This email is already registered.
+                    We already have a request from this email. We'll be in touch.
                   </p>
                 )}
               </div>
@@ -173,7 +164,7 @@ export default function VirgoPilotCTA() {
                 className="pill pill-primary"
                 style={{ width: '100%', marginTop: '4px', opacity: status === 'loading' ? 0.6 : 1 }}
               >
-                {status === 'loading' ? 'Sending…' : 'Get in touch'}
+                {status === 'loading' ? 'Sending…' : 'Book a demo'}
               </button>
 
               {/* A failed submit used to be a dead end ("please try again" on a

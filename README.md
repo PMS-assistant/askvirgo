@@ -174,3 +174,36 @@ renaming it would break the form. Visitors never see it.
 
 Before launch, replace the draft text on `/privacy` and `/terms` and remove the
 Draft banner (`src/components/legal/LegalLayout.tsx`).
+
+## Enquiry emails
+
+Two forms send enquiries: **Book a demo** on the homepage and the **Investors**
+page (`/investors`). Both save a row in `vzir_pilot_signups` (with
+`enquiry_type` = `demo` or `investor`). A database webhook then calls the
+`notify-email` function, which emails the owner and sends the visitor a short
+thank-you through Amazon SES. A failed email never loses an enquiry: the row
+is saved first.
+
+One-time setup:
+
+1. **Database change.** Apply `supabase/migrations/20261107120000_enquiry_types.sql`
+   (`npx supabase db push`, or paste it into the Supabase SQL editor). Until it
+   is applied, the forms still work and fold the type into the message.
+2. **SES domain.** `askvirgo.co.uk` is created as an SES identity in eu-west-2.
+   Add its three DKIM CNAME records and the `mail.askvirgo.co.uk` MX/TXT records
+   to Route 53 (shown in the SES console under the identity). Zoho mail records
+   stay as they are.
+3. **Sending key.** Create an IAM user allowed only `ses:SendEmail` and
+   `ses:SendRawEmail`, and an access key for it.
+4. **Function secrets and deploy:**
+   ```bash
+   npx supabase secrets set AWS_ACCESS_KEY_ID=... AWS_SECRET_ACCESS_KEY=... AWS_REGION=eu-west-2 \
+     NOTIFY_TO=hello@askvirgo.co.uk ENQUIRY_WEBHOOK_SECRET=<random string>
+   npx supabase functions deploy notify-email --no-verify-jwt
+   ```
+5. **Webhook.** Supabase dashboard → Database → Webhooks → new: table
+   `vzir_pilot_signups`, event INSERT, HTTP POST to the `notify-email` function
+   URL, header `x-webhook-secret: <same random string>`.
+6. **Leave the SES sandbox.** Until AWS grants production access, SES only
+   delivers to verified addresses: the owner email works once `NOTIFY_TO` is
+   verified, and the visitor thank-you starts working after approval.
