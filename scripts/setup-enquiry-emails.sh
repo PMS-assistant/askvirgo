@@ -29,8 +29,8 @@ step "1/4  Database changes"
 npx supabase link --project-ref "$PROJECT_REF" >/dev/null
 # The original table was created outside the CLI, so its migration is marked
 # as applied rather than run again.
-npx supabase migration repair --status applied 20260411151822 --linked --yes >/dev/null 2>&1 || true
-npx supabase db push --linked --yes
+npx supabase migration repair --status applied 20260411151822 --remote --yes >/dev/null 2>&1 || true
+npx supabase db push --remote --yes
 
 step "2/4  AWS sending-only user"
 if ! aws iam get-user --user-name "$IAM_USER" >/dev/null 2>&1; then
@@ -53,13 +53,13 @@ read -r KEY_ID KEY_SECRET < <(aws iam create-access-key --user-name "$IAM_USER" 
   --query 'AccessKey.[AccessKeyId,SecretAccessKey]' --output text)
 
 step "3/4  Function secrets"
-npx supabase secrets set --project-ref "$PROJECT_REF" \
+npx supabase secrets set --remote="$PROJECT_REF" --yes \
   AWS_ACCESS_KEY_ID="$KEY_ID" AWS_SECRET_ACCESS_KEY="$KEY_SECRET" \
   AWS_REGION="$REGION" NOTIFY_TO="$NOTIFY_TO" >/dev/null
 unset KEY_ID KEY_SECRET
 
 step "4/4  Deploy the email function"
-npx supabase functions deploy notify-email --project-ref "$PROJECT_REF" --no-verify-jwt
+npx supabase functions deploy notify-email --remote="$PROJECT_REF" --no-verify-jwt --yes
 
 step "Done. Enquiries will be emailed to $NOTIFY_TO."
 echo "Tell Claude \"done\" and it will send a test enquiry and check the email arrived."
