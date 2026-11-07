@@ -841,7 +841,6 @@ select option {
   .lr { background: var(--ground); border-top: 1px solid var(--line-soft); border-bottom: 1px solid var(--line-soft); overflow: hidden; padding: clamp(36px, 5vw, 56px) 0;
     -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent); }
   .lr-track { display: flex; width: max-content; animation: lr-run 36s linear infinite; }
-  .lr:hover .lr-track { animation-play-state: paused; }
   .lr-list { display: flex; align-items: center; gap: clamp(56px, 7vw, 112px); padding-right: clamp(56px, 7vw, 112px); margin: 0; list-style: none; }
   .lr-list li { display: flex; align-items: center; height: 64px; flex-shrink: 0; }
   .lr-logo { display: block; width: auto; max-width: none; }
